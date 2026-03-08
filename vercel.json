@@ -6,22 +6,34 @@
             "use": "@vercel/node"
         },
         {
-            "src": "frontend/**",
+            "src": "frontend/index.html",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "frontend/script.js",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "frontend/style.css",
             "use": "@vercel/static"
         }
     ],
-    "rewrites": [
+    "routes": [
         {
-            "source": "/api/(.*)",
-            "destination": "/backend/server.js"
+            "src": "/api/(.*)",
+            "dest": "/backend/server.js"
         },
         {
-            "source": "/",
-            "destination": "/frontend/index.html"
+            "src": "/script.js",
+            "dest": "/frontend/script.js"
         },
         {
-            "source": "/(.*)",
-            "destination": "/frontend/$1"
+            "src": "/style.css",
+            "dest": "/frontend/style.css"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/frontend/index.html"
         }
     ]
 }
