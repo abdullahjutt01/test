@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaMart | Next-Gen Commerce</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            🛍️ Mega<span>Mart</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search products, brands, categories...">
+            <button class="search-btn">🔍</button>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn" onclick="openAuthModal()">
+                <span class="icon">👤</span>
+                <span>Login</span>
+            </button>
+            <button class="nav-btn">
+                <span class="icon">🤍</span>
+                <span>Wishlist</span>
+            </button>
+            <button class="nav-btn">
+                <span class="icon">🛒</span>
+                <span>Cart</span>
+                <span class="badge" id="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="tag">🔥 LIMITED TIME OFFER</div>
+            <h1>Free Shipping Over $50</h1>
+            <p>Shop smart, save more on every order</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Start Shopping →</button>
+                <button class="btn btn-outline-white">Browse All</button>
+            </div>
+        </div>
+        <div class="hero-icon">🛍️</div>
+        <div class="hero-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-icon">🚚</span>
+            <div class="stat-title">Free Shipping</div>
+            <div class="stat-sub">On orders over $50</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">🔒</span>
+            <div class="stat-title">Secure Payment</div>
+            <div class="stat-sub">100% protected</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">↩️</span>
+            <div class="stat-title">Easy Returns</div>
+            <div class="stat-sub">30-day policy</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">💬</span>
+            <div class="stat-title">24/7 Support</div>
+            <div class="stat-sub">Always here to help</div>
+        </div>
+    </div>
+
+    <main>
+        <!-- Categories -->
+        <section class="section">
+            <h2 class="section-title">Shop by Category</h2>
+            <p class="section-subtitle">Explore our wide range of product categories</p>
+            <div class="categories-grid" id="categories-grid">
+                <!-- Categories injected by JS -->
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section class="section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">🔥 Featured Products</h2>
+                    <p class="section-subtitle">Hand-picked products just for you</p>
+                </div>
+                <button class="btn btn-outline">View All →</button>
+            </div>
+            <div class="products-grid" id="featured-products">
+                <!-- Products injected by JS -->
+            </div>
+        </section>
+
+        <!-- Promo Banner -->
+        <div class="promo-banner">
+            <div>
+                <h2>Join MegaMart Premium</h2>
+                <p>Get exclusive deals, free shipping & early access to sales</p>
+            </div>
+            <button class="btn btn-white">Get Started Free →</button>
+        </div>
+
+        <!-- Best Sellers -->
+        <section class="section">
+            <h2 class="section-title">⭐ Best Sellers</h2>
+            <p class="section-subtitle">Our most loved products</p>
+            <div class="products-grid" id="best-sellers">
+                <!-- Products injected by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">🛍️ Mega<span>Mart</span></div>
+                    <p class="footer-desc">Your one-stop online shopping destination. Quality products at unbeatable
+                        prices.</p>
+                </div>
+                <div>
+                    <div class="footer-heading">Quick Links</div>
+                    <div class="footer-link">Home</div>
+                    <div class="footer-link">Shop</div>
+                    <div class="footer-link">Categories</div>
+                </div>
+                <div>
+                    <div class="footer-heading">Customer Care</div>
+                    <div class="footer-link">My Orders</div>
+                    <div class="footer-link">Returns</div>
+                    <div class="footer-link">Contact Us</div>
+                </div>
+                <div>
+                    <div class="footer-heading">Policies</div>
+                    <div class="footer-link">Privacy Policy</div>
+                    <div class="footer-link">Terms of Service</div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 MegaMart. All rights reserved.</span>
+                <span>💳 Visa · Mastercard · PayPal · Apple Pay · COD</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Simple Login Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Login</h2>
+                <button onclick="closeAuthModal()"
+                    style="background:none; border:none; font-size: 20px; cursor:pointer;">✕</button>
+            </div>
+            <div style="margin-top: 20px;">
+                <input type="email" placeholder="Email"
+                    style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <input type="password" placeholder="Password"
+                    style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <button class="btn btn-primary" style="width: 100%; justify-content: center;">Sign In</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
