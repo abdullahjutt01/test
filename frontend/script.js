@@ -282,11 +282,11 @@ document.addEventListener("DOMContentLoaded", () => {
             container.innerHTML = cart.map((p, index) => {
                 total += p.price;
                 return `
-                <div style="display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+                <div style="display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom:8px;">
                     <img src="${p.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
                     <div style="flex: 1;">
-                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${p.title}</div>
-                        <div style="color: #6366f1; font-weight: 800;">${formatPrice(p.price)}</div>
+                        <div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color:#0f1111;">${p.title.slice(0, 50)}...</div>
+                        <div style="color: #B12704; font-weight: 800;">${formatPrice(p.price)}</div>
                     </div>
                     <button onclick="removeFromCart(${index})" style="background: #fee2e2; color: #ef4444; border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer;">🗑️</button>
                 </div>
@@ -296,6 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("cart-modal-count").innerText = cart.length;
         document.getElementById("cart-total").innerText = total.toFixed(2);
+        window._cartTotal = total;
         openModal('cart-modal');
     }
 
@@ -328,9 +329,245 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.removeFromWishlist = (index) => {
         wishlist.splice(index, 1);
-        openWishlistModal(); // re-render
+        openWishlistModal();
         showToast("Removed from wishlist");
     }
+
+    // ============================================
+    //  CHECKOUT - Backend Connected
+    // ============================================
+
+    window.proceedToCheckout = () => {
+        if (cart.length === 0) { showToast('Your cart is empty!'); return; }
+        closeModal('cart-modal');
+
+        const total = window._cartTotal || cart.reduce((s, p) => s + p.price, 0);
+
+        // Build checkout modal dynamically
+        let checkoutModal = document.getElementById('checkout-modal');
+        if (!checkoutModal) {
+            checkoutModal = document.createElement('div');
+            checkoutModal.id = 'checkout-modal';
+            checkoutModal.className = 'modal-overlay';
+            document.body.appendChild(checkoutModal);
+        }
+
+        checkoutModal.innerHTML = `
+            <div class="modal-box" style="max-width:520px; padding:30px;">
+                <div class="modal-header" style="margin-bottom:20px;">
+                    <h2 style="color:#0f1111;">🧾 Checkout</h2>
+                    <button onclick="closeModal('checkout-modal')" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+                </div>
+
+                <div style="background:#FFF3CD; border:1px solid #FFC107; border-radius:8px; padding:10px 14px; margin-bottom:18px; font-size:13px; color:#664d03;">
+                    🛒 <b>${cart.length} item(s)</b> — Total: <b style="color:#B12704;">$${total.toFixed(2)}</b>
+                </div>
+
+                <form id="checkout-form" onsubmit="submitOrder(event)" style="display:flex;flex-direction:column;gap:12px;">
+                    <input id="co-name" type="text" placeholder="Full Name *" required
+                        style="padding:10px 12px;border:1px solid #ccc;border-radius:6px;font-size:14px;">
+                    <input id="co-email" type="email" placeholder="Email Address *" required
+                        style="padding:10px 12px;border:1px solid #ccc;border-radius:6px;font-size:14px;">
+                    <input id="co-phone" type="tel" placeholder="Phone Number *" required
+                        style="padding:10px 12px;border:1px solid #ccc;border-radius:6px;font-size:14px;">
+                    <input id="co-address" type="text" placeholder="Street Address *" required
+                        style="padding:10px 12px;border:1px solid #ccc;border-radius:6px;font-size:14px;">
+                    <input id="co-city" type="text" placeholder="City *" required
+                        style="padding:10px 12px;border:1px solid #ccc;border-radius:6px;font-size:14px;">
+
+                    <div style="margin-top:6px;">
+                        <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#0f1111;">Payment Method</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">
+                                <input type="radio" name="payment" value="cod" checked> 💵 Cash on Delivery (COD)
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">
+                                <input type="radio" name="payment" value="stripe"> 💳 Credit / Debit Card (Stripe)
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">
+                                <input type="radio" name="payment" value="jazzcash"> 📱 JazzCash
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">
+                                <input type="radio" name="payment" value="easypaisa"> 📲 Easypaisa
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="justify-content:center;padding:14px;font-size:16px;margin-top:8px;background:#FFD814;color:#0f1111;border:1px solid #FFC200;border-radius:8px;cursor:pointer;font-weight:700;">
+                        ✅ Place Order — $${total.toFixed(2)}
+                    </button>
+                </form>
+            </div>
+        `;
+
+        checkoutModal.classList.add('active');
+    };
+
+    window.submitOrder = async (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById('co-name').value.trim();
+        const email = document.getElementById('co-email').value.trim();
+        const phone = document.getElementById('co-phone').value.trim();
+        const address = document.getElementById('co-address').value.trim();
+        const city = document.getElementById('co-city').value.trim();
+        const payment = document.querySelector('input[name="payment"]:checked').value;
+        const total = window._cartTotal || cart.reduce((s, p) => s + p.price, 0);
+
+        const orderPayload = {
+            guestName: fullName,
+            guestEmail: email,
+            items: cart.map(p => ({ title: p.title, image: p.image, price: p.price, quantity: 1 })),
+            totalPrice: parseFloat(total.toFixed(2)),
+            paymentMethod: payment,
+            shippingAddress: { fullName, address, city, phone }
+        };
+
+        const submitBtn = document.querySelector('#checkout-form button[type="submit"]');
+        submitBtn.textContent = '⏳ Placing order...';
+        submitBtn.disabled = true;
+
+        try {
+            // 1. Place order
+            const orderRes = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderPayload)
+            });
+            const orderData = await orderRes.json();
+
+            // 2. Process payment
+            await fetch(`/api/payment/${payment}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: total, orderId: orderData.orderId })
+            });
+
+            // 3. Show success
+            closeModal('checkout-modal');
+            cart = [];
+            document.getElementById('cart-count').innerText = 0;
+
+            // Success message
+            const successEl = document.createElement('div');
+            successEl.className = 'modal-overlay active';
+            successEl.innerHTML = `
+                <div class="modal-box" style="max-width:420px;text-align:center;padding:40px;">
+                    <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+                    <h2 style="color:#007600;margin-bottom:8px;">Order Placed!</h2>
+                    <p style="color:#555;margin-bottom:16px;">Thank you, <b>${fullName}</b>! Your order has been received.</p>
+                    <div style="background:#f0f9f0;border:1px solid #007600;border-radius:8px;padding:12px;margin-bottom:20px;font-size:14px;">
+                        <b>Order ID:</b> ${orderData.orderId || 'N/A'}<br>
+                        <b>Payment:</b> ${payment.toUpperCase()}<br>
+                        <b>Total:</b> <span style="color:#B12704;">$${total.toFixed(2)}</span><br>
+                        <b>City:</b> ${city}
+                    </div>
+                    <button onclick="this.closest('.modal-overlay').remove()" class="btn btn-primary"
+                        style="justify-content:center;width:100%;">
+                        Continue Shopping
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(successEl);
+
+        } catch (err) {
+            submitBtn.textContent = '✅ Place Order';
+            submitBtn.disabled = false;
+            showToast('⚠️ Could not connect to server. Please try again.');
+        }
+    };
+
+    // ============================================
+    //  AUTH - Backend Connected
+    // ============================================
+
+    let currentUser = JSON.parse(localStorage.getItem('megamart_user') || 'null');
+
+    const updateNavUser = () => {
+        const accountBtn = document.getElementById('account-btn');
+        if (accountBtn && currentUser) {
+            accountBtn.innerHTML = `👤 ${currentUser.username.split(' ')[0]}`;
+        }
+    };
+    updateNavUser();
+
+    window.openAuthModal = () => {
+        const modal = document.getElementById('auth-modal');
+        modal.innerHTML = `
+            <div class="modal-box" style="max-width:400px;">
+                <div class="modal-header">
+                    <h2 id="auth-title">Sign In</h2>
+                    <button onclick="closeModal('auth-modal')" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+                </div>
+                <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;" id="auth-form-area">
+                    <input id="auth-email" type="email" placeholder="Email" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;box-sizing:border-box;">
+                    <input id="auth-pass" type="password" placeholder="Password" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;box-sizing:border-box;">
+                    <div id="auth-name-wrap" style="display:none;">
+                        <input id="auth-name" type="text" placeholder="Full Name" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;box-sizing:border-box;">
+                    </div>
+                    <div id="auth-error" style="color:red;font-size:13px;display:none;"></div>
+                    <button onclick="submitAuth('login')" id="auth-login-btn" class="btn btn-primary" style="width:100%;justify-content:center;">Sign In</button>
+                    <p style="text-align:center;font-size:13px;color:#555;">
+                        New customer? <a href="#" onclick="toggleAuthMode()" style="color:#007185;">Create account</a>
+                    </p>
+                </div>
+            </div>
+        `;
+        openModal('auth-modal');
+    };
+
+    window.toggleAuthMode = () => {
+        const title = document.getElementById('auth-title');
+        const nameWrap = document.getElementById('auth-name-wrap');
+        const loginBtn = document.getElementById('auth-login-btn');
+        const isLogin = title.textContent === 'Sign In';
+        if (isLogin) {
+            title.textContent = 'Create Account';
+            nameWrap.style.display = 'block';
+            loginBtn.textContent = 'Register';
+            loginBtn.onclick = () => submitAuth('register');
+        } else {
+            title.textContent = 'Sign In';
+            nameWrap.style.display = 'none';
+            loginBtn.textContent = 'Sign In';
+            loginBtn.onclick = () => submitAuth('login');
+        }
+    };
+
+    window.submitAuth = async (mode) => {
+        const email = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-pass').value.trim();
+        const username = document.getElementById('auth-name')?.value.trim();
+        const errEl = document.getElementById('auth-error');
+        errEl.style.display = 'none';
+
+        if (!email || !password) { errEl.textContent = 'Please fill all fields'; errEl.style.display = 'block'; return; }
+
+        const body = mode === 'register' ? { username, email, password } : { email, password };
+
+        try {
+            const res = await fetch(`/api/auth/${mode}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (!res.ok) { errEl.textContent = data.msg || 'Error'; errEl.style.display = 'block'; return; }
+
+            currentUser = data.user;
+            localStorage.setItem('megamart_user', JSON.stringify(data.user));
+            localStorage.setItem('megamart_token', data.token);
+            updateNavUser();
+            closeModal('auth-modal');
+            showToast(`Welcome, ${data.user.username}! 👋`);
+
+        } catch {
+            errEl.textContent = 'Server unavailable. Try again.'; errEl.style.display = 'block';
+        }
+    };
+
+    window.closeAuthModal = () => closeModal('auth-modal');
 
     // ============================================
     //  CATEGORY VIEW TOGGLE

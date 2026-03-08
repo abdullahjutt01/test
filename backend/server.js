@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 // Register Routes
 app.use('/api/auth', require('./routes/auth.js'));
 app.use('/api/products', require('./routes/products.js'));
+app.use('/api/orders', require('./routes/orders.js'));
 app.use('/api/payment', require('./routes/payment.js'));
 
 // 404 Handler

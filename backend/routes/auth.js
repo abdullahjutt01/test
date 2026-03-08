@@ -1,88 +1,120 @@
 const express = require('express');
+const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const User = require('../models/User'); // MongoDB Model
+const User = require('../models/User');
 
-const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'megamart_secret_key';
 
-// @route   POST /api/auth/register
-// @desc    Register user
+// ─── Middleware: verify JWT token ────────────────────────────────────────────
+const authMiddleware = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ msg: 'No token, access denied' });
+    try {
+        req.user = jwt.verify(token, JWT_SECRET).user;
+        next();
+    } catch (e) {
+        res.status(401).json({ msg: 'Token is invalid or expired' });
+    }
+};
+
+// ─── POST /api/auth/register ─────────────────────────────────────────────────
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
-    // Simple validation
-    if (!username || !email || !password) {
-        return res.status(400).json({ msg: 'Please enter all fields' });
-    }
+    if (!username || !email || !password)
+        return res.status(400).json({ msg: 'Please fill all fields' });
+
+    if (password.length < 6)
+        return res.status(400).json({ msg: 'Password must be at least 6 characters' });
 
     try {
-        // Mock fallback if DB is not connected
+        // Fallback mode (no DB)
         if (mongoose.connection.readyState !== 1) {
-            const token = jwt.sign({ user: { id: "mock_id_123" } }, process.env.JWT_SECRET || 'secret123', { expiresIn: '1h' });
-            return res.json({ token, user: { id: "mock_id_123", username, email } });
+            const token = jwt.sign({ user: { id: 'demo_' + Date.now() } }, JWT_SECRET, { expiresIn: '7d' });
+            return res.json({ token, user: { id: 'demo_1', username, email, isAdmin: false } });
         }
 
-        // Check for existing user in MongoDB
         let user = await User.findOne({ email });
-        if (user) {
-            return res.status(400).json({ msg: 'User already exists' });
-        }
+        if (user) return res.status(400).json({ msg: 'Email already registered' });
 
         user = new User({ username, email, password });
-
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
-
+        user.password = await bcrypt.hash(password, 10);
         await user.save();
 
-        // Create JWT
-        const payload = { user: { id: user.id } };
-        const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret123', { expiresIn: '1h' });
+        const token = jwt.sign({ user: { id: user._id } }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin } });
 
-        res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        console.error('Register error:', err.message);
+        res.status(500).json({ msg: 'Server error during registration' });
     }
 });
 
-// @route   POST /api/auth/login
-// @desc    Login user & get token
+// ─── POST /api/auth/login ─────────────────────────────────────────────────────
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ msg: 'Please enter all fields' });
-    }
+    if (!email || !password)
+        return res.status(400).json({ msg: 'Please fill all fields' });
 
     try {
-        // Mock fallback if DB is not connected
+        // Fallback mode (no DB)  — any credentials work in demo mode
         if (mongoose.connection.readyState !== 1) {
-            const token = jwt.sign({ user: { id: "mock_user_1" } }, process.env.JWT_SECRET || 'secret123', { expiresIn: '1h' });
-            return res.json({ token, user: { id: "mock_user_1", username: "Demo User", email } });
+            const token = jwt.sign({ user: { id: 'demo_user' } }, JWT_SECRET, { expiresIn: '7d' });
+            return res.json({ token, user: { id: 'demo_user', username: 'Demo User', email, isAdmin: false } });
         }
 
-        // Find user
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
-        }
+        if (!user) return res.status(400).json({ msg: 'Invalid email or password' });
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ msg: 'Invalid credentials' });
-        }
+        if (!isMatch) return res.status(400).json({ msg: 'Invalid email or password' });
 
-        const payload = { user: { id: user.id } };
-        const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret123', { expiresIn: '1h' });
+        const token = jwt.sign({ user: { id: user._id } }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin } });
 
-        res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        console.error('Login error:', err.message);
+        res.status(500).json({ msg: 'Server error during login' });
+    }
+});
+
+// ─── GET /api/auth/me ─────────────────────────────────────────────────────────
+router.get('/me', authMiddleware, async (req, res) => {
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ id: req.user.id, username: 'Demo User', email: 'demo@megamart.com', isAdmin: false });
+        }
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) return res.status(404).json({ msg: 'User not found' });
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
+// ─── PUT /api/auth/wishlist ───────────────────────────────────────────────────
+router.put('/wishlist', authMiddleware, async (req, res) => {
+    const { productId } = req.body;
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ msg: 'Wishlist updated (demo mode)' });
+        }
+        const user = await User.findById(req.user.id);
+        const idx = user.wishlist.indexOf(productId);
+        if (idx > -1) {
+            user.wishlist.splice(idx, 1);   // remove if already in list
+        } else {
+            user.wishlist.push(productId);  // add to list
+        }
+        await user.save();
+        res.json({ wishlist: user.wishlist });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
     }
 });
 
 module.exports = router;
+module.exports.authMiddleware = authMiddleware;
