@@ -16,6 +16,10 @@
         {
             "src": "frontend/style.css",
             "use": "@vercel/static"
+        },
+        {
+            "src": "frontend/pdp.css",
+            "use": "@vercel/static"
         }
     ],
     "routes": [
@@ -30,6 +34,10 @@
         {
             "src": "/style.css",
             "dest": "/frontend/style.css"
+        },
+        {
+            "src": "/pdp.css",
+            "dest": "/frontend/pdp.css"
         },
         {
             "src": "/(.*)",

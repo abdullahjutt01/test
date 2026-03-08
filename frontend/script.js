@@ -222,46 +222,259 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+
+    // ────────────────────────────────────────────────────────
+    //  AMAZON-STYLE PRODUCT DETAIL PAGE
+    // ────────────────────────────────────────────────────────
     window.openProduct = (productId) => {
         const p = window.PRODUCTS.find(item => String(getId(item)) === String(productId));
-        if (p) {
-            const discount = getDiscount(p.price, p.originalPrice);
-            const discountHTML = discount > 0 ? `<div style="background:#10b981; color:#fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">-${discount}%</div>` : '';
-            const oldPriceHTML = discount > 0 ? `<span style="text-decoration: line-through; color: #94a3b8; font-size: 16px;">${formatPrice(p.originalPrice)}</span>` : '';
+        if (!p) return;
 
-            let stars = '';
-            for (let i = 1; i <= 5; i++) { stars += i <= Math.floor(p.rating) ? '★' : '☆'; }
+        const discount = getDiscount(p.price, p.originalPrice);
+        let stars = '';
+        for (let i = 1; i <= 5; i++) stars += (i <= Math.floor(p.rating) ? '★' : (i - p.rating < 1 ? '⯨' : '☆'));
 
-            const modalContent = `
-                <div style="width: 100%; display: flex; flex-direction: column; md:flex-row;">
-                    <div style="flex: 1; text-align: center; background: #f8fafc; padding: 20px;">
-                        <img src="${p.image}" style="max-width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px;" />
+        const deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + 2);
+        const deliveryStr = deliveryDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+        const related = window.PRODUCTS.filter(x => x.category === p.category && getId(x) !== getId(p)).slice(0, 8);
+        const relatedHTML = related.map(r => `
+            <div class="pdp-related-card" onclick="openProduct('${getId(r)}')">
+                <img src="${r.image}" alt="${r.title}" onerror="this.src='https://via.placeholder.com/160'">
+                <div class="pdp-related-title">${r.title.slice(0, 45)}...</div>
+                <div style="color:#f90;font-size:12px;">★★★★☆</div>
+                <div style="color:#B12704;font-weight:700;font-size:13px;">$${r.price.toFixed(2)}</div>
+            </div>`).join('');
+
+        const bars = [
+            { label: '5 star', pct: Math.min(90, Math.round(p.rating * 14)) },
+            { label: '4 star', pct: Math.min(60, Math.round(p.rating * 9)) },
+            { label: '3 star', pct: 8 },
+            { label: '2 star', pct: 4 },
+            { label: '1 star', pct: 3 }
+        ];
+        const barsHTML = bars.map(b => `
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#007185;margin-bottom:4px;">
+                <span style="min-width:40px;white-space:nowrap;">${b.label}</span>
+                <div style="flex:1;background:#e8e8e8;border-radius:3px;height:10px;overflow:hidden;">
+                    <div style="width:${b.pct}%;background:#f90;height:10px;"></div>
+                </div>
+                <span style="min-width:30px;text-align:right;">${b.pct}%</span>
+            </div>`).join('');
+
+        const bullets = [
+            `Premium ${p.category} – ${p.subCategory || p.category} product with market-leading quality`,
+            `Rated <b>${p.rating}/5</b> by <b>${p.reviews.toLocaleString()}</b> verified global customers`,
+            `Get it by <b>${deliveryStr}</b> with FREE Prime delivery on eligible orders`,
+            `30-day hassle-free returns · full manufacturer warranty included`,
+            `Secure checkout: COD · Card · JazzCash · Easypaisa all accepted`
+        ];
+
+        const sampleReviews = [
+            { name: 'Sarah M.', stars: '★★★★★', date: 'March 2, 2025', verified: true, text: 'Absolutely love this! Exceeded my expectations in every way. Fast delivery and great packaging too.' },
+            { name: 'Ahmed K.', stars: '★★★★☆', date: 'Feb 18, 2025', verified: true, text: 'Very good quality. Exactly as described. Would definitely recommend to friends and family.' },
+            { name: 'Jessica L.', stars: '★★★★★', date: 'Jan 30, 2025', verified: false, text: 'Best purchase I made this year. The quality is incredible for the price. Will definitely buy again!' }
+        ];
+
+        // Remove any existing PDP
+        const existing = document.getElementById('pdp-overlay');
+        if (existing) existing.remove();
+
+        const pdpDiv = document.createElement('div');
+        pdpDiv.id = 'pdp-overlay';
+        pdpDiv.className = 'pdp-page';
+        pdpDiv.innerHTML = `
+            <!-- Sticky topbar -->
+            <div class="pdp-topbar">
+                <button class="pdp-back-btn" onclick="closePDP()">&#8592; Back</button>
+                <span class="pdp-topbar-title">${p.title.slice(0, 60)}${p.title.length > 60 ? '…' : ''}</span>
+                <button class="pdp-topbar-cart" onclick="addToCart('${getId(p)}');showToast('Added to cart 🛒')">Add to Cart</button>
+            </div>
+
+            <div class="pdp-body">
+                <!-- Breadcrumb -->
+                <nav class="pdp-breadcrumb">
+                    <span onclick="closePDP()" style="cursor:pointer;color:#007185;">Home</span>
+                    <span class="pdp-bc-sep">›</span>
+                    <span onclick="closePDP();showCategoryView('${p.category}','${p.category}')" style="cursor:pointer;color:#007185;">${(p.category || '').charAt(0).toUpperCase() + (p.category || '').slice(1)}</span>
+                    <span class="pdp-bc-sep">›</span>
+                    <span style="color:#555;">${p.title.slice(0, 40)}…</span>
+                </nav>
+
+                <!-- Main 3-column -->
+                <div class="pdp-main">
+
+                    <!-- LEFT: Image gallery -->
+                    <div class="pdp-gallery">
+                        <div class="pdp-thumbs">
+                            ${[p.image, p.image, p.image, p.image].map((img, i) => `
+                                <img class="pdp-thumb${i === 0 ? ' active' : ''}" src="${img}"
+                                     onclick="document.getElementById('pdp-main-img').src='${img}';
+                                              document.querySelectorAll('.pdp-thumb').forEach(t=>t.classList.remove('active'));
+                                              this.classList.add('active');">
+                            `).join('')}
+                        </div>
+                        <div class="pdp-main-image-wrap">
+                            <img id="pdp-main-img" src="${p.image}" class="pdp-main-img" alt="${p.title}">
+                            ${discount > 0 ? `<div class="pdp-img-badge">-${discount}%</div>` : ''}
+                        </div>
                     </div>
-                    <div style="flex: 1; padding: 30px;">
-                        <div style="color: #6366f1; text-transform: uppercase; font-size: 12px; font-weight: bold; margin-bottom: 8px;">${p.category}</div>
-                        <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 12px; color: #1e293b;">${p.title}</h1>
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
-                            <span style="color: #f59e0b; font-size: 16px;">${stars}</span>
-                            <span style="color: #64748b; font-size: 14px;">(${p.reviews} reviews)</span>
+
+                    <!-- MIDDLE: Product info -->
+                    <div class="pdp-info">
+                        ${p.badge ? `<span class="pdp-label-badge">${p.badge}</span>` : ''}
+                        <h1 class="pdp-title">${p.title}</h1>
+
+                        <div class="pdp-rating-row">
+                            <span class="pdp-stars">${stars}</span>
+                            <a class="pdp-rating-link">${p.rating} out of 5</a>
+                            <span style="color:#ddd;">|</span>
+                            <a class="pdp-rating-link">${p.reviews.toLocaleString()} ratings</a>
                         </div>
-                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px;">
-                            <span style="font-size: 28px; font-weight: 900; color: #1e293b;">${formatPrice(p.price)}</span>
-                            ${oldPriceHTML}
-                            ${discountHTML}
+
+                        <div class="pdp-divider"></div>
+
+                        <!-- Price -->
+                        <div class="pdp-price-block">
+                            ${discount > 0 ? `<div class="pdp-list-price">List Price: <span>$${p.originalPrice.toFixed(2)}</span></div>` : ''}
+                            <div class="pdp-price-main">
+                                <sup class="pdp-price-sup">$</sup><span class="pdp-price-int">${Math.floor(p.price)}</span><sup class="pdp-price-dec">${(p.price % 1).toFixed(2).slice(1)}</sup>
+                            </div>
+                            ${discount > 0 ? `<div class="pdp-save-tag">You Save: <b style="color:#CC0C39;">$${(p.originalPrice - p.price).toFixed(2)} (${discount}%)</b></div>` : ''}
                         </div>
-                        <p style="color: #64748b; margin-bottom: 30px; font-size: 15px; line-height: 1.6;">Experience the best with ${p.title}. This product offers premium quality, outstanding performance, and excellent value for your money. Order now and enjoy free shipping!</p>
-                        
-                        <div style="display: flex; gap: 15px;">
-                            <button class="btn btn-primary" style="flex: 1; padding: 15px; font-size: 16px; justify-content: center;" onclick="addToCart('${getId(p)}'); closeModal('product-modal')">🛒 Add to Cart</button>
-                            <button onclick="addToWishlist('${getId(p)}', event)" style="background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 10px; width: 50px; height: 50px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;">🤍</button>
+
+                        <!-- Prime -->
+                        <div class="pdp-prime-row">
+                            <span class="pdp-prime">prime</span>
+                            <span class="pdp-prime-text">FREE Returns &amp; FREE Delivery</span>
+                        </div>
+
+                        <!-- Delivery -->
+                        <div class="pdp-delivery-box">
+                            <div><b>FREE delivery</b> <span style="color:#007600;">${deliveryStr}</span>
+                            &nbsp;· &nbsp;<span style="color:#CC0C39;font-weight:600;" id="pdp-countdown">12 hrs 34 mins</span></div>
+                            <div style="font-size:12px;color:#565959;margin-top:4px;">📍 Deliver to your location</div>
+                        </div>
+
+                        <div style="color:#007600;font-size:16px;font-weight:500;margin:10px 0;">In Stock</div>
+
+                        <!-- Qty + Actions -->
+                        <div class="pdp-qty-row">
+                            <label>Qty:</label>
+                            <select class="pdp-qty-select">
+                                ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<option>${n}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div class="pdp-action-btns">
+                            <button class="pdp-cart-btn" onclick="addToCart('${getId(p)}');showToast('Added to cart! 🛒')">Add to Cart</button>
+                            <button class="pdp-buy-btn" onclick="addToCart('${getId(p)}');closePDP();proceedToCheckout()">Buy Now</button>
+                        </div>
+
+                        <!-- Meta table -->
+                        <div class="pdp-meta-table">
+                            <div class="pdp-meta-row"><span>Ships from</span><span>MegaMart</span></div>
+                            <div class="pdp-meta-row"><span>Sold by</span><span style="color:#007185;">MegaMart Official</span></div>
+                            <div class="pdp-meta-row"><span>Returns</span><span>30-day easy returns</span></div>
+                            <div class="pdp-meta-row"><span>Payment</span><span>🔒 Secure transaction</span></div>
+                        </div>
+
+                        <button class="pdp-wishlist-btn" onclick="addToWishlist('${getId(p)}',event)">♡ Add to Wish List</button>
+                    </div>
+
+                    <!-- RIGHT: Buy box -->
+                    <div class="pdp-buybox">
+                        <div class="pdp-buybox-price">$${p.price.toFixed(2)}</div>
+                        <div class="pdp-prime-row" style="margin:6px 0 4px;">
+                            <span class="pdp-prime" style="font-size:11px;">prime</span>
+                            <span style="font-size:12px;color:#0f1111;">FREE Delivery</span>
+                        </div>
+                        <div style="font-size:12px;color:#007600;margin-bottom:10px;">Get it by <b>${deliveryStr}</b></div>
+                        <div style="color:#007600;font-size:13px;font-weight:600;margin-bottom:10px;">In Stock</div>
+                        <div style="margin-bottom:10px;">
+                            <select class="pdp-qty-select" style="width:100%;font-size:12px;">
+                                ${[1, 2, 3, 4, 5].map(n => `<option>Qty: ${n}</option>`).join('')}
+                            </select>
+                        </div>
+                        <button class="pdp-cart-btn" style="width:100%;margin-bottom:8px;font-size:13px;" onclick="addToCart('${getId(p)}');showToast('Added! 🛒')">Add to Cart</button>
+                        <button class="pdp-buy-btn" style="width:100%;margin-bottom:12px;font-size:13px;" onclick="addToCart('${getId(p)}');closePDP();proceedToCheckout()">Buy Now</button>
+                        <div style="font-size:11px;text-align:center;color:#565959;margin-bottom:10px;">🔒 Secure transaction</div>
+                        <div class="pdp-meta-table" style="font-size:11px;">
+                            <div class="pdp-meta-row"><span>Ships from</span><span>MegaMart</span></div>
+                            <div class="pdp-meta-row"><span>Sold by</span><span style="color:#007185;">MegaMart</span></div>
+                            <div class="pdp-meta-row"><span>Returns</span><span>30-day</span></div>
+                        </div>
+                        <button class="pdp-wishlist-btn" style="width:100%;margin-top:10px;font-size:12px;" onclick="addToWishlist('${getId(p)}',event)">♡ Add to Wish List</button>
+                    </div>
+                </div>
+
+                <!-- About this item -->
+                <div class="pdp-section">
+                    <h2 class="pdp-section-h">About this item</h2>
+                    <ul class="pdp-bullets">
+                        ${bullets.map(b => `<li>${b}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <!-- Description -->
+                <div class="pdp-section">
+                    <h2 class="pdp-section-h">Product Description</h2>
+                    <div class="pdp-desc-body">
+                        <p>Experience the pinnacle of quality with the <strong>${p.title}</strong>. Engineered for performance and built to last, this product combines innovation with everyday usability.</p>
+                        <p>Backed by <strong>${p.reviews.toLocaleString()}</strong> verified reviews and a stellar <strong>${p.rating}-star</strong> rating, it's the choice of thousands of satisfied customers worldwide.</p>
+                        <p>Order today and enjoy fast, free Prime delivery, 30-day hassle-free returns, and full after-sale support from MegaMart's dedicated customer care team.</p>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <div class="pdp-section">
+                    <h2 class="pdp-section-h">Customer reviews</h2>
+                    <div class="pdp-reviews-layout">
+                        <div class="pdp-rating-summary">
+                            <div class="pdp-big-rating">${p.rating}<span style="font-size:20px;">/5</span></div>
+                            <div style="color:#f90;font-size:20px;margin:4px 0;">${stars}</div>
+                            <div style="font-size:12px;color:#565959;">${p.reviews.toLocaleString()} global ratings</div>
+                            <div style="margin-top:16px;">${barsHTML}</div>
+                        </div>
+                        <div class="pdp-review-cards">
+                            ${sampleReviews.map(r => `
+                                <div class="pdp-review-card">
+                                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                                        <div class="pdp-avatar">${r.name[0]}</div>
+                                        <div>
+                                            <div style="font-weight:700;font-size:13px;">${r.name}</div>
+                                            ${r.verified ? `<div style="font-size:11px;color:#c45500;">✓ Verified Purchase</div>` : ''}
+                                        </div>
+                                    </div>
+                                    <div style="color:#f90;font-size:14px;margin-bottom:2px;">${r.stars}</div>
+                                    <div style="font-size:11px;color:#767676;margin-bottom:6px;">${r.date}</div>
+                                    <p style="font-size:13px;color:#0f1111;line-height:1.6;">${r.text}</p>
+                                    <div style="font-size:12px;color:#565959;margin-top:8px;">Helpful? <a href="#" onclick="return false;" style="color:#007185;">Yes (${Math.floor(Math.random() * 30) + 5})</a></div>
+                                </div>`).join('')}
                         </div>
                     </div>
                 </div>
-            `;
-            document.getElementById("product-modal-content").innerHTML = modalContent;
-            document.getElementById("product-modal").classList.add("active");
-        }
-    }
+
+                <!-- Related products -->
+                ${related.length > 0 ? `
+                <div class="pdp-section">
+                    <h2 class="pdp-section-h">Customers also viewed</h2>
+                    <div class="pdp-related-scroll">${relatedHTML}</div>
+                </div>` : ''}
+
+            </div><!-- end pdp-body -->
+        `;
+
+        document.body.appendChild(pdpDiv);
+        window.scrollTo(0, 0);
+    };
+
+    window.closePDP = () => {
+        const el = document.getElementById('pdp-overlay');
+        if (el) el.remove();
+        window.scrollTo(0, 0);
+    };
 
     // Modal Logic
     window.openModal = (modalId) => {
