@@ -13,28 +13,57 @@
     <!-- Top Navigation -->
     <nav class="navbar">
         <div class="logo">
-            🛍️ Mega<span>Mart</span>
+            Mega<span>Mart</span>
         </div>
+
+        <div class="nav-deliver-to">
+            <span class="nav-deliver-icon">📍</span>
+            <div class="nav-deliver-text">
+                <span class="line-1">Deliver to</span>
+                <span class="line-2">Pakistan</span>
+            </div>
+        </div>
+
         <div class="search-bar">
-            <input type="text" placeholder="Search products, brands, categories...">
+            <select class="search-dropdown">
+                <option value="all">All</option>
+                <option value="electronics">Electronics</option>
+                <option value="fashion">Fashion</option>
+            </select>
+            <input type="text" placeholder="Search MegaMart">
             <button class="search-btn">🔍</button>
         </div>
+
         <div class="nav-actions">
-            <button class="nav-btn" onclick="openAuthModal()">
-                <span class="icon">👤</span>
-                <span>Login</span>
-            </button>
-            <button class="nav-btn" onclick="openWishlistModal()">
-                <span class="icon">🤍</span>
-                <span>Wishlist</span>
-            </button>
-            <button class="nav-btn" onclick="openCartModal()">
+            <div class="nav-btn" onclick="openAuthModal()">
+                <div class="nav-btn-line-1">Hello, sign in</div>
+                <div class="nav-btn-line-2">Account & Lists <span>▼</span></div>
+            </div>
+
+            <div class="nav-btn" onclick="openWishlistModal()">
+                <div class="nav-btn-line-1">Returns</div>
+                <div class="nav-btn-line-2">& Orders</div>
+            </div>
+
+            <div class="nav-cart" onclick="openCartModal()">
                 <span class="icon">🛒</span>
-                <span>Cart</span>
                 <span class="badge" id="cart-count">0</span>
-            </button>
+                <span class="nav-cart-text">Cart</span>
+            </div>
         </div>
     </nav>
+
+    <!-- Sub Navigation -->
+    <div class="sub-navbar">
+        <div class="sub-nav-btn menu-btn">
+            <span class="icon">☰</span> All
+        </div>
+        <div class="sub-nav-btn">Today's Deals</div>
+        <div class="sub-nav-btn">Customer Service</div>
+        <div class="sub-nav-btn">Registry</div>
+        <div class="sub-nav-btn">Gift Cards</div>
+        <div class="sub-nav-btn">Sell</div>
+    </div>
 
     <!-- Hero Banner -->
     <div class="hero">

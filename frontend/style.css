@@ -68,18 +68,18 @@ body {
     font-weight: 800;
 }
 
-/* Top Navigation */
+/* Top Navigation (Amazon Style) */
 .navbar {
-    background: linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    padding: 0 24px;
+    background: #131921;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     gap: 16px;
-    height: 64px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    height: 60px;
     position: sticky;
     top: 0;
     z-index: 1000;
+    color: white;
 }
 
 .logo {
@@ -89,61 +89,213 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+.logo:hover {
+    border: 1px solid #fff;
 }
 
 .logo span {
     color: #f59e0b;
+    /* Keeps some mart identity */
+    margin-left: 2px;
+}
+
+.nav-deliver-to {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.nav-deliver-to:hover {
+    border: 1px solid #fff;
+}
+
+.nav-deliver-icon {
+    font-size: 16px;
+    margin-right: 4px;
+    margin-top: 8px;
+}
+
+.nav-deliver-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-deliver-text .line-1 {
+    font-size: 12px;
+    color: #cccccc;
+    line-height: 14px;
+}
+
+.nav-deliver-text .line-2 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 15px;
 }
 
 .search-bar {
     flex: 1;
-    max-width: 580px;
     display: flex;
     background: #fff;
-    border-radius: 10px;
+    border-radius: 4px;
     overflow: hidden;
+    height: 40px;
+    border: 2px solid transparent;
+}
+
+.search-bar:focus-within {
+    border: 2px solid #f59e0b;
+}
+
+.search-dropdown {
+    background: #f3f3f3;
+    color: #555;
+    border: none;
+    border-right: 1px solid #ccc;
+    padding: 0 10px;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+}
+
+.search-dropdown:hover {
+    background: #dadada;
 }
 
 .search-bar input {
     flex: 1;
-    padding: 10px 16px;
+    padding: 7px 10px 10px;
     border: none;
     outline: none;
     font-size: 15px;
+    color: #111;
 }
 
 .search-btn {
-    background: #f59e0b;
+    background: #febd69;
     border: none;
-    padding: 0 20px;
+    width: 45px;
     cursor: pointer;
-    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-btn:hover {
+    background: #f3a847;
 }
 
 .nav-actions {
     display: flex;
-    gap: 4px;
-    margin-left: auto;
+    align-items: center;
+    gap: 5px;
 }
 
 .nav-btn {
     background: none;
-    border: none;
+    border: 1px solid transparent;
     color: #fff;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    font-size: 11px;
-    padding: 0 8px;
-    position: relative;
-    opacity: 0.9;
+    align-items: flex-start;
+    padding: 8px 10px;
+    border-radius: 2px;
+    min-width: fit-content;
 }
 
-.nav-btn .icon {
-    font-size: 22px;
+.nav-btn:hover {
+    border: 1px solid #fff;
+}
+
+.nav-btn-line-1 {
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.nav-btn-line-2 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.nav-cart {
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    color: white;
+}
+
+.nav-cart:hover {
+    border: 1px solid #fff;
+}
+
+.nav-cart .icon {
+    font-size: 30px;
+    line-height: 30px;
+}
+
+.nav-cart-text {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.badge {
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    color: #f59e0b;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Sub Navigation (Amazon Style) */
+.sub-navbar {
+    background: #232f3e;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0 16px;
+    height: 38px;
+    color: white;
+}
+
+.sub-nav-btn {
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+
+.sub-nav-btn:hover {
+    border: 1px solid #fff;
+}
+
+.menu-btn {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.menu-btn .icon {
+    font-size: 18px;
 }
 
 .badge {
