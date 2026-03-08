@@ -336,8 +336,8 @@ body {
     background: #FF9900;
     height: 100%;
     width: 100%;
-    /* Using gradient to simulate the eid pattern from the screenshot */
-    background-image: radial-gradient(circle, #ffb347, #ff7b00);
+    /* Richer gradient for premium feel matching screenshot */
+    background-image: radial-gradient(circle at center top, #ff9e22 0%, #ff8000 70%, #e67300 100%);
 }
 
 .amazon-hero-content {
@@ -346,11 +346,16 @@ body {
     left: 40px;
     transform: translateY(-50%);
     color: white;
-    font-size: 30px;
+    font-size: 32px;
+    font-weight: 500;
 }
 
 .amazon-hero-content strong {
-    font-size: 50px;
+    font-size: 54px;
+    font-weight: 800;
+    line-height: 1.1;
+    display: block;
+    margin-top: 5px;
 }
 
 .amazon-hero-fade {
@@ -474,7 +479,16 @@ body {
     display: flex;
     gap: 15px;
     overflow-x: auto;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.a-card-scroll::-webkit-scrollbar {
+    display: none;
 }
 
 .video-card {
