@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const CATEGORIES = [
-        { id: "electronics", label: "Electronics", icon: "💻", color: "#6366f1" },
-        { id: "fashion", label: "Fashion", icon: "👗", color: "#ec4899" },
-        { id: "beauty", label: "Beauty", icon: "💄", color: "#f59e0b" },
-        { id: "home", label: "Home & Living", icon: "🏠", color: "#10b981" },
-        { id: "sports", label: "Sports", icon: "⚽", color: "#3b82f6" },
-        { id: "books", label: "Books", icon: "📚", color: "#8b5cf6" },
-        { id: "toys", label: "Toys", icon: "🧸", color: "#f97316" },
-        { id: "grocery", label: "Grocery", icon: "🛒", color: "#14b8a6" }
+        { id: "electronics", label: "Electronics & Tech", icon: "💻", color: "#6366f1" },
+        { id: "fashion", label: "Fashion & Apparel", icon: "👗", color: "#ec4899" },
+        { id: "home", label: "Home & Kitchen", icon: "🏠", color: "#10b981" },
+        { id: "beauty", label: "Beauty & Personal Care", icon: "💄", color: "#f59e0b" },
+        { id: "health", label: "Health & Wellness", icon: "💊", color: "#14b8a6" },
+        { id: "kids", label: "Baby & Kids", icon: "🧸", color: "#f97316" },
+        { id: "grocery", label: "Grocery & Food", icon: "🛒", color: "#84cc16" },
+        { id: "specialized", label: "Auto & Industrial", icon: "⚙️", color: "#64748b" },
+        { id: "digital", label: "Digital Products", icon: "📱", color: "#8b5cf6" }
     ];
 
     const PRODUCTS = [
