@@ -24,7 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let cart = [];
     let wishlist = [];
-    window.PRODUCTS = PRODUCTS;
+    window.PRODUCTS = [...PRODUCTS];
+
+    // Helper to get ID (handles both hardcoded 'id' and MongoDB '_id')
+    const getId = (product) => product._id || product.id;
 
     // Render Categories
     const catGrid = document.getElementById("categories-grid");
@@ -44,7 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render Products
     const renderProducts = (containerId, productsList) => {
         const grid = document.getElementById(containerId);
+        grid.innerHTML = ''; // clear loading state
         productsList.forEach(p => {
+            const pId = getId(p);
             const discount = getDiscount(p.price, p.originalPrice);
             const discountHTML = discount > 0 ? `<div class="product-discount">-${discount}%</div>` : '';
             const oldPriceHTML = discount > 0 ? `<span class="price-old">${formatPrice(p.originalPrice)}</span>` : '';
@@ -56,15 +61,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             grid.innerHTML += `
                 <div class="product-card">
-                    <div class="product-image-container" style="cursor: pointer;" onclick="openProduct(${p.id})">
+                    <div class="product-image-container" style="cursor: pointer;" onclick="openProduct('${pId}')">
                         <img src="${p.image}" class="product-image" alt="${p.title}">
                         ${badgeHTML}
                         ${discountHTML}
-                        <button class="wishlist-btn" onclick="addToWishlist(${p.id}, event)">🤍</button>
+                        <button class="wishlist-btn" onclick="addToWishlist('${pId}', event)">🤍</button>
                     </div>
                     <div class="product-info">
                         <div class="product-cat">${p.category}</div>
-                        <div class="product-title" style="cursor: pointer;" onclick="openProduct(${p.id})">${p.title}</div>
+                        <div class="product-title" style="cursor: pointer;" onclick="openProduct('${pId}')">${p.title}</div>
                         <div class="product-rating">
                             <span class="stars">${stars}</span>
                             <span>(${p.reviews})</span>
@@ -73,20 +78,36 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span class="price-current">${formatPrice(p.price)}</span>
                             ${oldPriceHTML}
                         </div>
-                        <button class="btn btn-primary btn-add-cart" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+                        <button class="btn btn-primary btn-add-cart" onclick="addToCart('${pId}')">🛒 Add to Cart</button>
                     </div>
                 </div>
             `;
         });
     }
 
-    renderProducts("featured-products", PRODUCTS.slice(0, 4));
-    renderProducts("best-sellers", PRODUCTS.slice(4, 8));
+    // Fetch Products from Backend
+    const fetchAndRenderProducts = async () => {
+        try {
+            const response = await fetch('/api/products');
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    window.PRODUCTS = data;
+                }
+            }
+        } catch (error) {
+            console.error("Failed to load products from backend API. Using dummy data.", error);
+        }
 
+        renderProducts("featured-products", window.PRODUCTS.slice(0, 4));
+        renderProducts("best-sellers", window.PRODUCTS.slice(4, 8));
+    };
+
+    fetchAndRenderProducts();
 
     // Global Functions for buttons
     window.addToCart = (productId) => {
-        const product = PRODUCTS.find(p => p.id === productId);
+        const product = window.PRODUCTS.find(p => String(getId(p)) === String(productId));
         if (product) {
             cart.push(product);
             document.getElementById("cart-count").innerText = cart.length;
@@ -96,9 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addToWishlist = (productId, event) => {
         event.stopPropagation();
-        const product = PRODUCTS.find(p => p.id === productId);
+        const product = window.PRODUCTS.find(p => String(getId(p)) === String(productId));
         if (product) {
-            const exists = wishlist.some(item => item.id === productId);
+            const exists = wishlist.some(item => String(getId(item)) === String(productId));
             if (!exists) {
                 wishlist.push(product);
                 showToast("Added to wishlist ♥");
@@ -109,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.openProduct = (productId) => {
-        const p = PRODUCTS.find(item => item.id === productId);
+        const p = window.PRODUCTS.find(item => String(getId(item)) === String(productId));
         if (p) {
             const discount = getDiscount(p.price, p.originalPrice);
             const discountHTML = discount > 0 ? `<div style="background:#10b981; color:#fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">-${discount}%</div>` : '';
@@ -138,8 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p style="color: #64748b; margin-bottom: 30px; font-size: 15px; line-height: 1.6;">Experience the best with ${p.title}. This product offers premium quality, outstanding performance, and excellent value for your money. Order now and enjoy free shipping!</p>
                         
                         <div style="display: flex; gap: 15px;">
-                            <button class="btn btn-primary" style="flex: 1; padding: 15px; font-size: 16px; justify-content: center;" onclick="addToCart(${p.id}); closeModal('product-modal')">🛒 Add to Cart</button>
-                            <button onclick="addToWishlist(${p.id}, event)" style="background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 10px; width: 50px; height: 50px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;">🤍</button>
+                            <button class="btn btn-primary" style="flex: 1; padding: 15px; font-size: 16px; justify-content: center;" onclick="addToCart('${getId(p)}'); closeModal('product-modal')">🛒 Add to Cart</button>
+                            <button onclick="addToWishlist('${getId(p)}', event)" style="background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 10px; width: 50px; height: 50px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;">🤍</button>
                         </div>
                     </div>
                 </div>
@@ -204,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${p.title}</div>
                         <div style="color: #6366f1; font-weight: 800;">${formatPrice(p.price)}</div>
                     </div>
-                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="addToCart(${p.id}); removeFromWishlist(${index})">Move to Cart</button>
+                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="addToCart('${getId(p)}'); removeFromWishlist(${index})">Move to Cart</button>
                     <button onclick="removeFromWishlist(${index})" style="background: none; border: none; font-size: 16px; cursor: pointer;">✕</button>
                 </div>
             `).join('');
