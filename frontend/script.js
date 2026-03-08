@@ -60,14 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Render Categories
     const catGrid = document.getElementById("categories-grid");
-    CATEGORIES.forEach(c => {
-        catGrid.innerHTML += `
-            <div class="category-card" onmouseover="this.style.borderColor='${c.color}'" onmouseout="this.style.borderColor='transparent'">
-                <div class="category-icon">${c.icon}</div>
-                <div class="category-label">${c.label}</div>
-            </div>
-        `;
-    });
+    if (catGrid) {
+        CATEGORIES.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'category-card';
+            div.innerHTML = `<div class="category-icon">${c.icon}</div><div class="category-label">${c.label}</div>`;
+            div.addEventListener('mouseover', () => div.style.borderColor = c.color);
+            div.addEventListener('mouseout', () => div.style.borderColor = 'transparent');
+            div.addEventListener('click', () => showCategoryView(c.id, c.label));
+            catGrid.appendChild(div);
+        });
+    }
 
     // Format Price Utility
     const formatPrice = p => `$${parseFloat(p).toFixed(2)}`;
@@ -267,6 +270,129 @@ document.addEventListener("DOMContentLoaded", () => {
         openWishlistModal(); // re-render
         showToast("Removed from wishlist");
     }
+
+    // ============================================
+    //  CATEGORY VIEW TOGGLE
+    // ============================================
+
+    const getStars = (rating) => {
+        let s = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(rating)) s += '★';
+            else if (i - rating < 1) s += '½';
+            else s += '☆';
+        }
+        return s;
+    };
+
+    window.showCategoryView = (categoryId, categoryLabel) => {
+        const homeView = document.getElementById('home-view');
+        const catView = document.getElementById('category-view');
+        const grid = document.getElementById('category-products-grid');
+        const resultsText = document.getElementById('category-results-text');
+        const sidebarActive = document.querySelector('.filter-list li.active');
+
+        // Filter products
+        const filtered = window.PRODUCTS.filter(p => {
+            if (categoryId === 'all') return true;
+            return p.category === categoryId;
+        });
+
+        // Update results text
+        if (resultsText) {
+            resultsText.innerHTML = `1-${filtered.length} of over 1,000 results for "<span>${categoryLabel}</span>"`;
+        }
+
+        // Update sidebar active label
+        if (sidebarActive) sidebarActive.textContent = categoryLabel;
+
+        // Render cat cards
+        grid.innerHTML = '';
+
+        // Breadcrumb
+        grid.innerHTML += `
+            <div class="category-breadcrumb" onclick="showHomeView()">← Back to Home</div>
+        `;
+
+        if (filtered.length === 0) {
+            grid.innerHTML += `<p style="padding: 20px; color: #555;">No products found in this category. Try "Electronics" or "Home".</p>`;
+        }
+
+        filtered.forEach(p => {
+            const pId = getId(p);
+            const discount = getDiscount(p.price, p.originalPrice);
+            const discountLabel = discount > 0 ? `<span class="cat-card-discount">(-${discount}%)</span>` : '';
+            const originalLabel = discount > 0 ? `<span class="cat-card-original">${formatPrice(p.originalPrice)}</span>` : '';
+            const stars = getStars(p.rating);
+            // Fake delivery date (3 days from now)
+            const deliveryDate = new Date();
+            deliveryDate.setDate(deliveryDate.getDate() + 3);
+            const deliveryStr = deliveryDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+            grid.innerHTML += `
+                <div class="cat-card">
+                    <img class="cat-card-image" src="${p.image}" alt="${p.title}" onclick="openProduct('${pId}')">
+                    <div class="cat-card-body">
+                        <div class="cat-card-title" onclick="openProduct('${pId}')">${p.title}</div>
+                        <div class="cat-card-rating">
+                            <span class="cat-card-stars">${stars}</span>
+                            <span class="cat-card-reviews">${(p.reviews || 0).toLocaleString()} ratings</span>
+                        </div>
+                        <div class="cat-card-price-block">
+                            <span class="cat-card-price"><sup>$</sup>${p.price.toFixed(2)}</span>
+                            ${originalLabel}
+                            ${discountLabel}
+                        </div>
+                        <div class="cat-card-prime">
+                            <span class="prime-badge">prime</span>
+                            FREE Delivery
+                        </div>
+                        <div class="cat-card-delivery">Get it by <b>${deliveryStr}</b></div>
+                        <button class="cat-card-add-btn" onclick="addToCart('${pId}')">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        homeView.style.display = 'none';
+        catView.style.display = 'flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.showHomeView = () => {
+        document.getElementById('home-view').style.display = 'block';
+        document.getElementById('category-view').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Make logo click go back to home
+    const logoEl = document.querySelector('.logo');
+    if (logoEl) logoEl.addEventListener('click', showHomeView);
+
+    // Hook up sub-navbar links to category views
+    const subNavBtns = document.querySelectorAll('.sub-nav-btn');
+    subNavBtns.forEach(btn => {
+        btn.addEventListener('click', () => showCategoryView('all', btn.textContent.trim()));
+    });
+
+    // Hook all a-card-links and quad-items to trigger category view
+    document.querySelectorAll('.a-card-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const cat = link.textContent.includes('gaming') ? 'electronics' :
+                link.textContent.includes('Home') ? 'home' :
+                    link.textContent.includes('kitchen') ? 'home' :
+                        link.textContent.includes('Fashion') ? 'fashion' :
+                            link.textContent.includes('garden') ? 'home' : 'all';
+            showCategoryView(cat, link.closest('.a-card').querySelector('.a-card-title').textContent);
+        });
+    });
+
+    document.querySelectorAll('.quad-item').forEach(qi => {
+        qi.addEventListener('click', () => {
+            showCategoryView('all', qi.querySelector('span').textContent);
+        });
+    });
 
     window.showToast = (msg) => {
         const container = document.getElementById("toast-container");

@@ -66,7 +66,7 @@
     </div>
 
     <!-- Amazon Main Body -->
-    <main class="amazon-main">
+    <main class="amazon-main" id="home-view">
         <!-- Hero Banner -->
         <div class="amazon-hero">
             <div class="amazon-hero-bg">
@@ -336,6 +336,58 @@
             </div>
 
         </div>
+    </main>
+
+    <!-- Amazon Category / Search Results View -->
+    <main class="category-main-layout" id="category-view" style="display: none;">
+        <!-- Left Sidebar Filters -->
+        <aside class="category-sidebar">
+            <div class="filter-section">
+                <h3>Department</h3>
+                <ul class="filter-list">
+                    <li><a href="#" onclick="return false;">Any Department</a></li>
+                    <li class="active">Selected Category</li>
+                </ul>
+            </div>
+
+            <div class="filter-section">
+                <h3>Customer Reviews</h3>
+                <ul class="filter-list">
+                    <li><a href="#" onclick="return false;">⭐⭐⭐⭐⭐ & Up</a></li>
+                    <li><a href="#" onclick="return false;">⭐⭐⭐⭐ & Up</a></li>
+                    <li><a href="#" onclick="return false;">⭐⭐⭐ & Up</a></li>
+                    <li><a href="#" onclick="return false;">⭐⭐ & Up</a></li>
+                </ul>
+            </div>
+
+            <div class="filter-section">
+                <h3>Price</h3>
+                <ul class="filter-list">
+                    <li><a href="#" onclick="return false;">Under $25</a></li>
+                    <li><a href="#" onclick="return false;">$25 to $50</a></li>
+                    <li><a href="#" onclick="return false;">$50 to $100</a></li>
+                    <li><a href="#" onclick="return false;">$100 to $200</a></li>
+                    <li><a href="#" onclick="return false;">$200 & Above</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Right Main Content -->
+        <section class="category-main">
+            <div class="category-top-bar">
+                <span class="results-count" id="category-results-text">1-16 of over 1,000 results for "Category"</span>
+                <select class="sort-dropdown">
+                    <option>Sort by: Featured</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Customer Review</option>
+                </select>
+            </div>
+
+            <div class="category-products-grid" id="category-products-grid">
+                <!-- Javascript will inject specific category products here -->
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
