@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "kids", label: "Baby & Kids", icon: "🧸", color: "#f97316" },
         { id: "grocery", label: "Grocery & Food", icon: "🛒", color: "#84cc16" },
         { id: "specialized", label: "Auto & Industrial", icon: "⚙️", color: "#64748b" },
-        { id: "digital", label: "Digital Products", icon: "📱", color: "#8b5cf6" }
+        { id: "digital", label: "Digital Products", icon: "📱", color: "#8b5cf6" },
+        { id: "office", label: "Office & Stationery", icon: "🗂️", color: "#0ea5e9" },
+        { id: "industrial", label: "Industrial & Scientific", icon: "🧪", color: "#475569" },
+        { id: "media", label: "Books, Movies & Music", icon: "🎬", color: "#a855f7" }
     ];
 
     const PRODUCTS = [
@@ -108,7 +111,12 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "d3", title: "Notion Pro Plan 1-Year Subscription", category: "digital", subCategory: "Learning & Software", price: 96.00, originalPrice: 96.00, rating: 4.8, reviews: 41000, image: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=400&fit=crop", badge: "Productivity" },
         { id: "d4", title: "Atomic Habits by James Clear (eBook)", category: "digital", subCategory: "Learning & Software", price: 11.98, originalPrice: 27.00, rating: 4.9, reviews: 105000, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=400&fit=crop", badge: "Must Read" },
         { id: "bk1", title: "The Psychology of Money - Morgan Housel", category: "digital", subCategory: "Learning & Software", price: 13.40, originalPrice: 18.99, rating: 4.7, reviews: 54000, image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=400&h=400&fit=crop", badge: "" },
-        { id: "bk2", title: "Rich Dad Poor Dad 25th Anniversary Edition", category: "digital", subCategory: "Learning & Software", price: 12.29, originalPrice: 18.99, rating: 4.7, reviews: 88000, image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=400&fit=crop", badge: "Classic" }
+        { id: "bk2", title: "Rich Dad Poor Dad 25th Anniversary Edition", category: "digital", subCategory: "Learning & Software", price: 12.29, originalPrice: 18.99, rating: 4.7, reviews: 88000, image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=400&fit=crop", badge: "Classic" },
+
+        // ===================== OFFICE / INDUSTRIAL / MEDIA =====================
+        { id: "o1", title: "Moleskine Professional Notebook A5", category: "office", subCategory: "Office Supplies", price: 19.99, originalPrice: 24.99, rating: 4.7, reviews: 9200, image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=400&fit=crop", badge: "Popular" },
+        { id: "i1", title: "Fluke 117 Electrician True RMS Multimeter", category: "industrial", subCategory: "Test & Measurement", price: 219.99, originalPrice: 259.99, rating: 4.8, reviews: 3100, image: "https://images.unsplash.com/photo-1581092160607-ee22731adf8b?w=400&h=400&fit=crop", badge: "Pro" },
+        { id: "m1", title: "Inception 4K UHD + Blu-ray", category: "media", subCategory: "Movies & TV", price: 24.99, originalPrice: 34.99, rating: 4.9, reviews: 28000, image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=400&fit=crop", badge: "Top Rated" }
     ];
 
     const CATEGORY_ARCHITECTURE = {
@@ -182,6 +190,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Software": ["Antivirus", "Video Editors", "Design Tools", "Office Suites", "Cloud Storage"],
                 "Education": ["Language Courses", "Coding Bootcamps", "Exam Prep", "Study Notes", "Templates"],
                 "Media": ["Music Subscription", "Video Streaming", "Audiobooks", "Podcast Premium", "Stock Media"]
+            }
+        },
+        office: {
+            subCategories: {
+                "Office Supplies": ["Planners", "Desk Organizers", "Notebooks", "Pens", "Sticky Notes"],
+                "Stationery": ["Markers", "Printer Paper", "Staplers", "Folders", "Art Supplies"],
+                "Workspace Tech": ["Webcams", "Docking Stations", "Desk Lamps", "Label Printers", "Paper Shredders"],
+                "School & College": ["Backpacks", "Calculators", "Binders", "Highlighters", "Whiteboards"]
+            }
+        },
+        industrial: {
+            subCategories: {
+                "Lab Equipment": ["Microscopes", "Centrifuges", "Pipettes", "Beakers", "Incubators"],
+                "Raw Materials": ["Steel Sheets", "Copper Wire", "Aluminum Rods", "Resins", "Industrial Adhesives"],
+                "Power & Tools": ["Angle Grinders", "Welding Machines", "Drill Press", "Air Compressors", "Safety Helmets"],
+                "Test & Measurement": ["Multimeters", "Oscilloscopes", "Calipers", "Thermal Cameras", "Pressure Gauges"]
+            }
+        },
+        media: {
+            subCategories: {
+                "Books": ["Fiction", "Business Books", "Children Books", "Comics", "Exam Prep Books"],
+                "Movies & TV": ["Blu-ray", "4K Discs", "TV Box Sets", "Documentaries", "Anime Collections"],
+                "Music": ["Vinyl Records", "CD Albums", "Instrumentals", "Classical Collections", "Pop Collections"],
+                "Subscriptions": ["Music Streaming", "Video Streaming", "Audiobook Plans", "News Subscriptions", "Podcast Premium"]
             }
         }
     };
