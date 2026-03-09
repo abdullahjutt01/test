@@ -790,7 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return s;
     };
 
-    window.showCategoryView = (categoryId, categoryLabel) => {
+    window.showCategoryView = (categoryId, categoryLabel, searchQuery = '') => {
         const homeView = document.getElementById('home-view');
         const catView = document.getElementById('category-view');
         const grid = document.getElementById('category-products-grid');
@@ -799,8 +799,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Filter products
         const filtered = window.PRODUCTS.filter(p => {
-            if (categoryId === 'all') return true;
-            return p.category === categoryId;
+            const matchesCat = (categoryId === 'all' || p.category === categoryId);
+            if (!searchQuery) return matchesCat;
+            const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (p.subCategory && p.subCategory.toLowerCase().includes(searchQuery.toLowerCase()));
+            return matchesCat && matchesSearch;
         });
 
         // Update results text
@@ -893,6 +896,40 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Hook up the Search bar and button
+    const searchBtn = document.querySelector('.search-btn');
+    const searchInput = document.querySelector('.search-bar input');
+    const searchDropdown = document.querySelector('.search-dropdown');
+
+    const handleSearch = () => {
+        const catId = searchDropdown ? searchDropdown.value : 'all';
+        let catName = searchDropdown && searchDropdown.options.length > 0
+            ? searchDropdown.options[searchDropdown.selectedIndex].text
+            : 'Search Results';
+
+        const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+        // If there's a specific search query, let's treat it as an "all" search for the keyword, 
+        // or a filtered search within the selected category.
+        if (query) {
+            catName = `Search: "${query}"`;
+            showCategoryView(catId, catName, query);
+        } else {
+            showCategoryView(catId, catName);
+        }
+    };
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    }
 
     window.showToast = (msg) => {
         const container = document.getElementById("toast-container");
