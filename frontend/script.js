@@ -258,6 +258,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Helper to get ID (handles both hardcoded 'id' and MongoDB '_id')
     const getId = (product) => product._id || product.id;
 
+    // Search dropdown dynamic categories
+    const searchDropdown = document.querySelector('.search-dropdown');
+    if (searchDropdown) {
+        searchDropdown.innerHTML = '<option value="all">All Categories</option>' +
+            CATEGORIES.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+    }
+
     // Render Categories
     const catGrid = document.getElementById("categories-grid");
     if (catGrid) {
@@ -940,13 +947,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const catView = document.getElementById('category-view');
         const grid = document.getElementById('category-products-grid');
         const resultsText = document.getElementById('category-results-text');
-        const sidebarActive = document.querySelector('.filter-list li.active');
+        const selectedCategoryLabel = document.getElementById('selected-category-label');
+        const departmentList = document.getElementById('category-department-list');
 
         // Filter products
         const filtered = window.PRODUCTS.filter(p => {
             if (categoryId === 'all') return true;
             return p.category === categoryId;
         });
+
+        if (departmentList) {
+            departmentList.innerHTML = `<li><a href="#" onclick="showCategoryView('all','All Departments'); return false;">All Departments</a></li>` +
+                CATEGORIES.map(c => {
+                    const count = window.PRODUCTS.filter(p => p.category === c.id).length;
+                    return `<li><a href="#" onclick="showCategoryView('${c.id}','${c.label.replace("'", "\'")}'); return false;">${c.label} (${count})</a></li>`;
+                }).join('');
+        }
 
         // Update results text
         if (resultsText) {
@@ -962,7 +978,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Update sidebar active label
-        if (sidebarActive) sidebarActive.textContent = categoryLabel;
+        if (selectedCategoryLabel) selectedCategoryLabel.textContent = `Selected: ${categoryLabel}`;
 
         // Render cat cards
         grid.innerHTML = '';
@@ -1050,6 +1066,47 @@ document.addEventListener("DOMContentLoaded", () => {
         qi.addEventListener('click', () => {
             showCategoryView('all', qi.querySelector('span').textContent);
         });
+    });
+
+    const searchInput = document.querySelector('.search-bar input');
+    const searchBtn = document.querySelector('.search-btn');
+    const runSearch = () => {
+        const query = (searchInput?.value || '').trim().toLowerCase();
+        const selectedCategory = searchDropdown?.value || 'all';
+        const filtered = window.PRODUCTS.filter(p => {
+            const categoryMatch = selectedCategory === 'all' || p.category === selectedCategory;
+            const text = `${p.title} ${p.subCategory || ''} ${p.category}`.toLowerCase();
+            const textMatch = !query || text.includes(query);
+            return categoryMatch && textMatch;
+        });
+
+        const label = query ? `Search: ${query}` : (selectedCategory === 'all' ? 'All Departments' : (CATEGORIES.find(c => c.id === selectedCategory)?.label || 'Category'));
+        showCategoryView(selectedCategory, label);
+        if (query) {
+            const grid = document.getElementById('category-products-grid');
+            const resultsText = document.getElementById('category-results-text');
+            if (resultsText) resultsText.innerHTML = `1-${filtered.length} results for "<span>${query}</span>" in ${label}`;
+            if (grid) {
+                grid.innerHTML = `<div class="category-breadcrumb" onclick="showHomeView()">← Back to Home</div>`;
+                filtered.forEach(p => {
+                    const pId = getId(p);
+                    const discount = getDiscount(p.price, p.originalPrice);
+                    const discountLabel = discount > 0 ? `<span class="cat-card-discount">(-${discount}%)</span>` : '';
+                    const originalLabel = discount > 0 ? `<span class="cat-card-original">${formatPrice(p.originalPrice)}</span>` : '';
+                    const stars = getStars(p.rating);
+                    grid.innerHTML += `<div class="cat-card"><img class="cat-card-image" src="${p.image}" alt="${p.title}" onclick="openProduct('${pId}')"><div class="cat-card-body"><div class="cat-card-title" onclick="openProduct('${pId}')">${p.title}</div><div class="cat-card-rating"><span class="cat-card-stars">${stars}</span><span class="cat-card-reviews">${(p.reviews || 0).toLocaleString()} ratings</span></div><div class="cat-card-price-block"><span class="cat-card-price"><sup>$</sup>${p.price.toFixed(2)}</span>${originalLabel}${discountLabel}</div><button class="cat-card-add-btn" onclick="addToCart('${pId}')">Add to Cart</button></div></div>`;
+                });
+                if (!filtered.length) grid.innerHTML += `<p style="padding:20px;color:#555;">No products matched your search.</p>`;
+            }
+        }
+    };
+
+    if (searchBtn) searchBtn.addEventListener('click', runSearch);
+    if (searchInput) searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            runSearch();
+        }
     });
 
     window.showToast = (msg) => {

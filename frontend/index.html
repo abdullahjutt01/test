@@ -338,6 +338,14 @@
             </div>
 
         </div>
+
+        <section class="category-explorer">
+            <div class="category-explorer-head">
+                <h2>Explore All Categories</h2>
+                <p>Open any department to view its own product list (50+ items).</p>
+            </div>
+            <div class="categories-grid" id="categories-grid"></div>
+        </section>
     </main>
 
     <!-- Amazon Category / Search Results View -->
@@ -346,10 +354,10 @@
         <aside class="category-sidebar">
             <div class="filter-section">
                 <h3>Department</h3>
-                <ul class="filter-list">
-                    <li><a href="#" onclick="return false;">Any Department</a></li>
-                    <li class="active">Selected Category</li>
+                <ul class="filter-list" id="category-department-list">
+                    <li><a href="#" onclick="showCategoryView('all','All Departments'); return false;">All Departments</a></li>
                 </ul>
+                <div class="selected-category-label" id="selected-category-label">Selected: Category</div>
             </div>
 
             <div class="filter-section">
