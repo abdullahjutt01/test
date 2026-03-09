@@ -109,6 +109,121 @@ const DUMMY_PRODUCTS = [
 
 ];
 
+const CATEGORY_ARCHITECTURE = {
+    electronics: {
+        subCategories: {
+            "Computing & Peripherals": ["Laptops", "Desktop PCs", "Monitors", "Mechanical Keyboards", "Hard Drives"],
+            "Mobile & Wearables": ["Smartphones", "Power Banks", "Magsafe Mounts", "Wireless Earbuds", "Smartwatches"],
+            "Home Entertainment": ["Smart TVs", "Projectors", "Streaming Sticks", "Soundbars", "Gaming Consoles"],
+            "Smart Home & Security": ["Security Cameras", "Smart Lights", "Thermostats", "Voice Assistants", "Smart Locks"]
+        }
+    },
+    fashion: {
+        subCategories: {
+            "Women's Fashion": ["Dresses", "Sarees", "Handbags", "Blazers", "Leggings"],
+            "Men's Fashion": ["Polo Shirts", "Jeans", "Hoodies", "Dress Shoes", "Belts"],
+            "Footwear": ["Sneakers", "Leather Boots", "Sandals", "Running Shoes", "Loafers"],
+            "Jewelry & Timepieces": ["Earrings", "Necklaces", "Smartwatches", "Luxury Watches", "Bracelets"]
+        }
+    },
+    home: {
+        subCategories: {
+            "Kitchen & Dining": ["Air Fryers", "Coffee Makers", "Blenders", "Knife Sets", "Utensils"],
+            "Furniture & Bedding": ["Office Chairs", "Bed Frames", "Bookshelves", "Sofas", "Mattresses"],
+            "Decor & Lighting": ["Wall Art", "Scented Candles", "Rugs", "Throw Blankets", "Lamps"],
+            "Garden & Outdoor": ["Patio Furniture", "Grills", "Lawn Mowers", "Power Tools", "Grow Bags"]
+        }
+    },
+    beauty: {
+        subCategories: {
+            "Skincare": ["Serums", "Moisturizers", "Facial Peels", "Sunscreen", "Cleansers"],
+            "Cosmetics": ["Lip Stains", "Mascara", "Foundations", "Makeup Brushes", "Eyeliners"],
+            "Personal Care": ["Shampoo", "Hair Straighteners", "Electric Shavers", "Perfume", "Conditioners"],
+            "Health & Fitness": ["Vitamins", "Protein Powder", "Yoga Mats", "Fitness Trackers", "Resistance Bands"]
+        }
+    },
+    health: {
+        subCategories: {
+            "Supplements": ["Vitamins", "Protein Powders", "Herbal Remedies", "Omega 3", "Electrolytes"],
+            "Medical Supplies": ["First Aid", "Mobility Aids", "Diagnostic Kits", "Blood Pressure Monitors", "Thermometers"],
+            "Fitness": ["Yoga Mats", "Resistance Bands", "Dumbbells", "Treadmills", "Foam Rollers"],
+            "Wellness": ["Sleep Aids", "Massagers", "Aromatherapy", "Posture Correctors", "Eye Masks"]
+        }
+    },
+    kids: {
+        subCategories: {
+            "Baby Essentials": ["Diapers", "Wipes", "Baby Monitors", "Strollers", "Baby Bottles"],
+            "Toys & Learning": ["STEM Kits", "Board Games", "Building Blocks", "RC Cars", "Puzzles"],
+            "Kids Clothing": ["Onesies", "Sleep Sacks", "Bamboo Baby Clothes", "Kids Shoes", "Jackets"],
+            "School Time": ["Backpacks", "Lunch Boxes", "Color Sets", "Story Books", "Stationery Kits"]
+        }
+    },
+    grocery: {
+        subCategories: {
+            "Grocery & Gourmet": ["Coffee Beans", "Organic Snacks", "Meal Kits", "Spices", "Tea"],
+            "Pantry": ["Rice", "Pasta", "Cooking Oil", "Sauces", "Flour"],
+            "Fresh": ["Fruits", "Vegetables", "Dairy", "Bakery", "Eggs"],
+            "Beverages": ["Water", "Energy Drinks", "Juices", "Soda", "Sports Drinks"]
+        }
+    },
+    specialized: {
+        subCategories: {
+            "Automotive Gear": ["Dash Cams", "Tires", "Brake Pads", "Car Wax", "Seat Covers"],
+            "Pet Supplies": ["Smart Collars", "GPS Trackers", "Grooming Kits", "Pet Food", "Litter"],
+            "Sports & Outdoors": ["Bicycles", "Hiking Boots", "Tents", "Fishing Rods", "Camping Stoves"],
+            "Arts & Hobbies": ["Crochet Kits", "Yarn", "Paint Sets", "Musical Instruments", "Sketch Books"]
+        }
+    },
+    digital: {
+        subCategories: {
+            "Learning & Software": ["Online Courses", "eBooks", "SaaS Tools", "Gaming Skins", "Mobile Apps"],
+            "Software": ["Antivirus", "Video Editors", "Design Tools", "Office Suites", "Cloud Storage"],
+            "Education": ["Language Courses", "Coding Bootcamps", "Exam Prep", "Study Notes", "Templates"],
+            "Media": ["Music Subscription", "Video Streaming", "Audiobooks", "Podcast Premium", "Stock Media"]
+        }
+    }
+};
+
+const ensureMinCategoryProducts = (products, minPerCategory = 50) => {
+    const expanded = [...products];
+
+    Object.entries(CATEGORY_ARCHITECTURE).forEach(([categoryId, arch]) => {
+        const categoryProducts = expanded.filter(p => p.category === categoryId);
+        let nextIndex = 1;
+
+        while (categoryProducts.length < minPerCategory) {
+            Object.entries(arch.subCategories).forEach(([subCategory, items]) => {
+                items.forEach((itemName) => {
+                    if (categoryProducts.length >= minPerCategory) return;
+                    const base = categoryProducts[nextIndex % Math.max(categoryProducts.length, 1)] || expanded[0];
+
+                    const synthetic = {
+                        ...base,
+                        _id: `${categoryId}-auto-${categoryProducts.length + 1}`,
+                        title: `${itemName} ${nextIndex} (${subCategory})`,
+                        category: categoryId,
+                        subCategory,
+                        price: Number((12 + (nextIndex * 3.17) % 799).toFixed(2)),
+                        originalPrice: Number((18 + (nextIndex * 3.67) % 899).toFixed(2)),
+                        rating: Number((4 + ((nextIndex % 10) * 0.08)).toFixed(1)),
+                        reviews: 120 + nextIndex * 37,
+                        badge: nextIndex % 4 === 0 ? 'Global Pick' : ''
+                    };
+
+                    expanded.push(synthetic);
+                    categoryProducts.push(synthetic);
+                    nextIndex += 1;
+                });
+            });
+        }
+    });
+
+    return expanded;
+};
+
+const ALL_PRODUCTS = ensureMinCategoryProducts(DUMMY_PRODUCTS);
+
+
 // @route   GET /api/products
 // @desc    Get all products (with optional ?category= filter)
 router.get('/', async (req, res) => {
@@ -118,18 +233,18 @@ router.get('/', async (req, res) => {
         // If DB is not connected, serve dummy data
         if (mongoose.connection.readyState !== 1) {
             if (category) {
-                return res.json(DUMMY_PRODUCTS.filter(p => p.category === category));
+                return res.json(ALL_PRODUCTS.filter(p => p.category === category));
             }
-            return res.json(DUMMY_PRODUCTS);
+            return res.json(ALL_PRODUCTS);
         }
 
         const query = category ? { category } : {};
         const products = await Product.find(query);
         if (products.length === 0) {
             if (category) {
-                return res.json(DUMMY_PRODUCTS.filter(p => p.category === category));
+                return res.json(ALL_PRODUCTS.filter(p => p.category === category));
             }
-            return res.json(DUMMY_PRODUCTS);
+            return res.json(ALL_PRODUCTS);
         }
 
         res.json(products);
