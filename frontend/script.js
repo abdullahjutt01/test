@@ -907,14 +907,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.showToast = (msg) => {
         const container = document.getElementById("toast-container");
+        if (!container) return;
         const toast = document.createElement("div");
         toast.className = "toast";
         toast.innerText = "✓ " + msg;
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
-    }
-
-    window.openAuthModal = () => openModal('auth-modal');
-    window.closeAuthModal = () => closeModal('auth-modal');
+    };
 
 });

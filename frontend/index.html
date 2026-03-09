@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="pdp.css">
+    <link rel="stylesheet" href="keyboard.css">
 
 </head>
 
@@ -64,7 +65,7 @@
         <div class="sub-nav-btn">Customer Service</div>
         <div class="sub-nav-btn">Registry</div>
         <div class="sub-nav-btn">Gift Cards</div>
-        <div class="sub-nav-btn">Sell</div>
+        <a href="seller.html" class="sub-nav-btn" style="text-decoration:none; color:white;">Sell</a>
     </div>
 
     <!-- Amazon Main Body -->
@@ -426,23 +427,8 @@
         </div>
     </footer>
 
-    <!-- Simple Login Modal -->
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h2>Login</h2>
-                <button onclick="closeAuthModal()"
-                    style="background:none; border:none; font-size: 20px; cursor:pointer;">✕</button>
-            </div>
-            <div style="margin-top: 20px;">
-                <input type="email" placeholder="Email"
-                    style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
-                <input type="password" placeholder="Password"
-                    style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-                <button class="btn btn-primary" style="width: 100%; justify-content: center;">Sign In</button>
-            </div>
-        </div>
-    </div>
+    <!-- Auth Modal (content injected by JS via openAuthModal()) -->
+    <div class="modal-overlay" id="auth-modal"></div>
 
     <!-- Cart Modal -->
     <div class="modal-overlay" id="cart-modal">
@@ -483,21 +469,12 @@
         </div>
     </div>
 
-    <!-- Product Modal (Quick View) -->
-    <div class="modal-overlay" id="product-modal">
-        <div class="modal-box" style="max-width: 700px; padding: 0; overflow: hidden; position: relative;">
-            <button onclick="closeModal('product-modal')"
-                style="position: absolute; right: 15px; top: 15px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 32px; height: 32px; border:none; font-size: 18px; cursor:pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">✕</button>
-            <div id="product-modal-content" style="display: flex; flex-wrap: wrap;">
-                <!-- Product content injected here -->
-            </div>
-        </div>
-    </div>
 
     <!-- Notification Toast -->
     <div id="toast-container" class="toast-container"></div>
 
     <script src="script.js"></script>
+    <script src="keyboard.js"></script>
 </body>
 
 </html>

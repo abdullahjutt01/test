@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/Order');
-const { authMiddleware } = require('./auth');
+const authMiddleware = require('../middleware/auth');
+
+
 
 // ─── POST /api/orders ─────────────────────────────────────────────────────────
 // Place a new order (works for guests too)

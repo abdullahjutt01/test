@@ -1,0 +1,141 @@
+/* Keyboard styling for the virtual keyboard matching the aesthetic requested */
+
+:root {
+    --kb-bg: rgba(255, 255, 255, 0.4);
+    --kb-border: rgba(255, 255, 255, 0.5);
+    --kb-key-bg: rgba(255, 255, 255, 0.65);
+    --kb-key-border: rgba(255, 255, 255, 0.8);
+    --kb-key-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --kb-text: #334155;
+    --kb-primary: rgba(15, 17, 17, 0.8);
+    --kb-hover: rgba(255, 255, 255, 0.9);
+}
+
+.keyboard-trigger-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: var(--kb-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    border: none;
+}
+
+.keyboard-trigger-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.keyboard-trigger-btn:hover {
+    transform: scale(1.05);
+}
+
+.virtual-keyboard-container {
+    position: fixed;
+    bottom: -400px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    background: var(--kb-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--kb-border);
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+    z-index: 10001;
+    transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.virtual-keyboard-container.active {
+    bottom: 0;
+}
+
+.keyboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--kb-border);
+    padding-bottom: 10px;
+}
+
+.keyboard-lang-select {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--kb-key-border);
+    background: var(--kb-key-bg);
+    color: var(--kb-text);
+    font-family: inherit;
+    outline: none;
+}
+
+.keyboard-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--kb-text);
+    cursor: pointer;
+}
+
+.keyboard-keys-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.keyboard-key {
+    background: var(--kb-key-bg);
+    border: 1px solid var(--kb-key-border);
+    border-radius: 8px;
+    min-width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--kb-text);
+    cursor: pointer;
+    box-shadow: var(--kb-key-shadow);
+    transition: all 0.1s;
+    user-select: none;
+}
+
+.keyboard-key:active {
+    background: var(--kb-hover);
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.key-wide {
+    min-width: 70px;
+}
+
+.key-space {
+    width: 40%;
+}
+
+.key-action {
+    background: rgba(255, 153, 0, 0.2);
+    color: #b12704;
+}

@@ -4,20 +4,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const authMiddleware = require('../middleware/auth');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'megamart_secret_key';
-
-// ─── Middleware: verify JWT token ────────────────────────────────────────────
-const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) return res.status(401).json({ msg: 'No token, access denied' });
-    try {
-        req.user = jwt.verify(token, JWT_SECRET).user;
-        next();
-    } catch (e) {
-        res.status(401).json({ msg: 'Token is invalid or expired' });
-    }
-};
 
 // ─── POST /api/auth/register ─────────────────────────────────────────────────
 router.post('/register', async (req, res) => {
@@ -117,4 +106,3 @@ router.put('/wishlist', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
-module.exports.authMiddleware = authMiddleware;
