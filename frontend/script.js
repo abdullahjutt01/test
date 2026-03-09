@@ -851,12 +851,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             ${originalLabel}
                             ${discountLabel}
                         </div>
-                        <div class="cat-card-prime">
-                            <span class="prime-badge">prime</span>
-                            FREE Delivery
+                        <div class="cat-card-delivery">
+                            Get it by <b>${deliveryStr}</b><br>
+                            <span class="cat-card-delivery-prime">✓ prime</span>
                         </div>
-                        <div class="cat-card-delivery">Get it by <b>${deliveryStr}</b></div>
-                        <button class="cat-card-add-btn" onclick="addToCart('${pId}')">Add to Cart</button>
+                        <button class="btn-add-cart-small" onclick="addToCart('${pId}')">Add to Cart</button>
                     </div>
                 </div>
             `;
