@@ -119,6 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "m1", title: "Inception 4K UHD + Blu-ray", category: "media", subCategory: "Movies & TV", price: 24.99, originalPrice: 34.99, rating: 4.9, reviews: 28000, image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=400&fit=crop", badge: "Top Rated" }
     ];
 
+    const FALLBACK_IMAGE = "https://via.placeholder.com/400x400?text=Image+Not+Available";
+
     const CATEGORY_ARCHITECTURE = {
         electronics: {
             subCategories: {
@@ -257,6 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Helper to get ID (handles both hardcoded 'id' and MongoDB '_id')
     const getId = (product) => product._id || product.id;
+    const safeImage = (imageUrl) => imageUrl || FALLBACK_IMAGE;
+
 
     // Search dropdown dynamic categories
     const searchDropdown = document.querySelector('.search-dropdown');
@@ -301,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
             grid.innerHTML += `
                 <div class="product-card">
                     <div class="product-image-container" style="cursor: pointer;" onclick="openProduct('${pId}')">
-                        <img src="${p.image}" class="product-image" alt="${p.title}">
+                        <img src="${safeImage(p.image)}" class="product-image" alt="${p.title}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'">
                         ${badgeHTML}
                         ${discountHTML}
                         <button class="wishlist-btn" onclick="addToWishlist('${pId}', event)">🤍</button>
@@ -340,6 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderProducts("featured-products", window.PRODUCTS.slice(0, 4));
         renderProducts("best-sellers", window.PRODUCTS.slice(4, 8));
+        attachImageFallbacks();
     };
 
     fetchAndRenderProducts();
@@ -387,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const related = window.PRODUCTS.filter(x => x.category === p.category && getId(x) !== getId(p)).slice(0, 8);
         const relatedHTML = related.map(r => `
             <div class="pdp-related-card" onclick="openProduct('${getId(r)}')">
-                <img src="${r.image}" alt="${r.title}" onerror="this.src='https://via.placeholder.com/160'">
+                <img src="${safeImage(r.image)}" alt="${r.title}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'">
                 <div class="pdp-related-title">${r.title.slice(0, 45)}...</div>
                 <div style="color:#f90;font-size:12px;">★★★★☆</div>
                 <div style="color:#B12704;font-weight:700;font-size:13px;">$${r.price.toFixed(2)}</div>
@@ -455,14 +460,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="pdp-gallery">
                         <div class="pdp-thumbs">
                             ${[p.image, p.image, p.image, p.image].map((img, i) => `
-                                <img class="pdp-thumb${i === 0 ? ' active' : ''}" src="${img}"
+                                <img class="pdp-thumb${i === 0 ? ' active' : ''}" src="${safeImage(img)}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'"
                                      onclick="document.getElementById('pdp-main-img').src='${img}';
                                               document.querySelectorAll('.pdp-thumb').forEach(t=>t.classList.remove('active'));
                                               this.classList.add('active');">
                             `).join('')}
                         </div>
                         <div class="pdp-main-image-wrap">
-                            <img id="pdp-main-img" src="${p.image}" class="pdp-main-img" alt="${p.title}">
+                            <img id="pdp-main-img" src="${safeImage(p.image)}" class="pdp-main-img" alt="${p.title}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'">
                             ${discount > 0 ? `<div class="pdp-img-badge">-${discount}%</div>` : ''}
                         </div>
                     </div>
@@ -613,6 +618,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         document.body.appendChild(pdpDiv);
+        attachImageFallbacks();
         window.scrollTo(0, 0);
     };
 
@@ -642,7 +648,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 total += p.price;
                 return `
                 <div style="display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom:8px;">
-                    <img src="${p.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
+                    <img src="${safeImage(p.image)}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
                     <div style="flex: 1;">
                         <div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color:#0f1111;">${p.title.slice(0, 50)}...</div>
                         <div style="color: #B12704; font-weight: 800;">${formatPrice(p.price)}</div>
@@ -673,7 +679,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             container.innerHTML = wishlist.map((p, index) => `
                 <div style="display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
-                    <img src="${p.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
+                    <img src="${safeImage(p.image)}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
                     <div style="flex: 1;">
                         <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${p.title}</div>
                         <div style="color: #6366f1; font-weight: 800;">${formatPrice(p.price)}</div>
@@ -1005,7 +1011,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             grid.innerHTML += `
                 <div class="cat-card">
-                    <img class="cat-card-image" src="${p.image}" alt="${p.title}" onclick="openProduct('${pId}')">
+                    <img class="cat-card-image" src="${safeImage(p.image)}" alt="${p.title}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'" onclick="openProduct('${pId}')">
                     <div class="cat-card-body">
                         <div class="cat-card-title" onclick="openProduct('${pId}')">${p.title}</div>
                         <div class="cat-card-rating">
@@ -1028,6 +1034,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         });
 
+        attachImageFallbacks();
         homeView.style.display = 'none';
         catView.style.display = 'flex';
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1068,6 +1075,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    function attachImageFallbacks() {
+        document.querySelectorAll('img').forEach((img) => {
+            if (!img.dataset.fallbackAttached) {
+                img.dataset.fallbackAttached = '1';
+                img.addEventListener('error', () => {
+                    img.src = FALLBACK_IMAGE;
+                });
+            }
+        });
+    }
+
+    attachImageFallbacks();
+
     const searchInput = document.querySelector('.search-bar input');
     const searchBtn = document.querySelector('.search-btn');
     const runSearch = () => {
@@ -1094,9 +1114,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     const discountLabel = discount > 0 ? `<span class="cat-card-discount">(-${discount}%)</span>` : '';
                     const originalLabel = discount > 0 ? `<span class="cat-card-original">${formatPrice(p.originalPrice)}</span>` : '';
                     const stars = getStars(p.rating);
-                    grid.innerHTML += `<div class="cat-card"><img class="cat-card-image" src="${p.image}" alt="${p.title}" onclick="openProduct('${pId}')"><div class="cat-card-body"><div class="cat-card-title" onclick="openProduct('${pId}')">${p.title}</div><div class="cat-card-rating"><span class="cat-card-stars">${stars}</span><span class="cat-card-reviews">${(p.reviews || 0).toLocaleString()} ratings</span></div><div class="cat-card-price-block"><span class="cat-card-price"><sup>$</sup>${p.price.toFixed(2)}</span>${originalLabel}${discountLabel}</div><button class="cat-card-add-btn" onclick="addToCart('${pId}')">Add to Cart</button></div></div>`;
+                    grid.innerHTML += `<div class="cat-card"><img class="cat-card-image" src="${safeImage(p.image)}" alt="${p.title}" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'" onclick="openProduct('${pId}')"><div class="cat-card-body"><div class="cat-card-title" onclick="openProduct('${pId}')">${p.title}</div><div class="cat-card-rating"><span class="cat-card-stars">${stars}</span><span class="cat-card-reviews">${(p.reviews || 0).toLocaleString()} ratings</span></div><div class="cat-card-price-block"><span class="cat-card-price"><sup>$</sup>${p.price.toFixed(2)}</span>${originalLabel}${discountLabel}</div><button class="cat-card-add-btn" onclick="addToCart('${pId}')">Add to Cart</button></div></div>`;
                 });
                 if (!filtered.length) grid.innerHTML += `<p style="padding:20px;color:#555;">No products matched your search.</p>`;
+                attachImageFallbacks();
             }
         }
     };
