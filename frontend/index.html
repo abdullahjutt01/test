@@ -32,6 +32,13 @@
                 <option value="all">All</option>
                 <option value="electronics">Electronics</option>
                 <option value="fashion">Fashion</option>
+                <option value="home">Home & Kitchen</option>
+                <option value="beauty">Beauty</option>
+                <option value="health">Health</option>
+                <option value="kids">Kids & Baby</option>
+                <option value="grocery">Grocery</option>
+                <option value="specialized">Auto & Pet</option>
+                <option value="digital">Digital & Software</option>
             </select>
             <input type="text" placeholder="Search MegaMart">
             <button class="search-btn">🔍</button>
@@ -61,10 +68,15 @@
         <div class="sub-nav-btn menu-btn">
             <span class="icon">☰</span> All
         </div>
-        <div class="sub-nav-btn">Today's Deals</div>
-        <div class="sub-nav-btn">Customer Service</div>
-        <div class="sub-nav-btn">Registry</div>
-        <div class="sub-nav-btn">Gift Cards</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="electronics">Electronics</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="fashion">Fashion</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="home">Home & Kitchen</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="beauty">Beauty</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="health">Health</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="kids">Kids & Baby</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="grocery">Grocery</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="specialized">Auto & Pet</div>
+        <div class="sub-nav-btn cat-trigger" data-cat="digital">Digital & Books</div>
         <a href="seller.html" class="sub-nav-btn" style="text-decoration:none; color:white;">Sell</a>
     </div>
 
@@ -83,84 +95,46 @@
 
         <!-- Cards Container -->
         <div class="amazon-container">
-            <!-- Row 1: 4 Quad/Single Cards -->
+            <!-- Row 1: Global Categories First Part -->
             <div class="amazon-row">
-                <!-- Card 1 (Single) -->
-                <div class="a-card">
-                    <h2 class="a-card-title">Get your game on</h2>
+                <!-- Card 1: Electronics -->
+                <div class="a-card cat-card-clickable" data-cat="electronics">
+                    <h2 class="a-card-title">Electronics & Tech</h2>
                     <div class="a-card-single">
-                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=400&fit=crop"
-                            alt="Game">
+                        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop"
+                            alt="Electronics">
                     </div>
-                    <a href="#" class="a-card-link">Shop gaming</a>
+                    <a href="#" class="a-card-link">Shop Electronics</a>
                 </div>
 
-                <!-- Card 2 (Quad) -->
-                <div class="a-card">
-                    <h2 class="a-card-title">Shop for your home essentials</h2>
-                    <div class="a-card-quad">
-                        <div class="quad-item">
-                            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=150&h=150&fit=crop"
-                                alt="Item">
-                            <span>Cleaning</span>
-                        </div>
-                        <div class="quad-item">
-                            <img src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?w=150&h=150&fit=crop"
-                                alt="Item">
-                            <span>Storage</span>
-                        </div>
-                        <div class="quad-item">
-                            <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=150&h=150&fit=crop"
-                                alt="Item">
-                            <span>Decor</span>
-                        </div>
-                        <div class="quad-item">
-                            <img src="https://images.unsplash.com/photo-1522771731535-64906f230dae?w=150&h=150&fit=crop"
-                                alt="Item">
-                            <span>Bedding</span>
-                        </div>
+                <!-- Card 2: Fashion -->
+                <div class="a-card cat-card-clickable" data-cat="fashion">
+                    <h2 class="a-card-title">Fashion & Apparel</h2>
+                    <div class="a-card-single">
+                        <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop"
+                            alt="Fashion">
                     </div>
-                    <a href="#" class="a-card-link">Discover more in Home</a>
+                    <a href="#" class="a-card-link">Discover Fashion</a>
                 </div>
 
-                <!-- Card 3 (Quad) -->
-                <div class="a-card">
-                    <h2 class="a-card-title">New home arrivals under $50</h2>
-                    <div class="a-card-quad">
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=150&h=150&fit=crop"><span>Kitchen</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=150&h=150&fit=crop"><span>Dining</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=150&h=150&fit=crop"><span>Decor</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1536882240095-0379873feb4e?w=150&h=150&fit=crop"><span>Bedding</span>
-                        </div>
+                <!-- Card 3: Home & Kitchen -->
+                <div class="a-card cat-card-clickable" data-cat="home">
+                    <h2 class="a-card-title">Home & Kitchen</h2>
+                    <div class="a-card-single">
+                        <img src="https://images.unsplash.com/photo-1556909211-36987daf1dc2?w=400&h=400&fit=crop"
+                            alt="Home">
                     </div>
-                    <a href="#" class="a-card-link">Shop the latest from Home</a>
+                    <a href="#" class="a-card-link">Upgrade your Home</a>
                 </div>
 
-                <!-- Card 4 (Quad) -->
-                <div class="a-card">
-                    <h2 class="a-card-title">Top categories in Kitchen</h2>
-                    <div class="a-card-quad">
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1585515320310-259814833e62?w=150&h=150&fit=crop"><span>Cookers</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=150&h=150&fit=crop"><span>Coffee</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=150&h=150&fit=crop"><span>Pots</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1585514652236-4122d15ed625?w=150&h=150&fit=crop"><span>Blenders</span>
-                        </div>
+                <!-- Card 4: Beauty -->
+                <div class="a-card cat-card-clickable" data-cat="beauty">
+                    <h2 class="a-card-title">Beauty & Personal Care</h2>
+                    <div class="a-card-single">
+                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop"
+                            alt="Beauty">
                     </div>
-                    <a href="#" class="a-card-link">Explore all kitchen appliances</a>
+                    <a href="#" class="a-card-link">Shop Beauty</a>
                 </div>
             </div>
 
@@ -173,7 +147,7 @@
                     <div class="video-card">
                         <div class="video-overlay">
                             <span class="video-views">▶ 1.2M</span>
-                            <div class="video-info">#funny #standwithkashmir</div>
+                            <div class="video-info">#tech #review</div>
                         </div>
                         <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&h=500&fit=crop"
                             class="video-thumb">
@@ -182,7 +156,7 @@
                     <div class="video-card">
                         <div class="video-overlay">
                             <span class="video-views">▶ 840K</span>
-                            <div class="video-info">#foryoupage #newaccount</div>
+                            <div class="video-info">#fashion #style</div>
                         </div>
                         <img src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=300&h=500&fit=crop"
                             class="video-thumb">
@@ -191,7 +165,7 @@
                     <div class="video-card">
                         <div class="video-overlay">
                             <span class="video-views">▶ 2.5M</span>
-                            <div class="video-info">#fyp #comedy</div>
+                            <div class="video-info">#beauty #routine</div>
                         </div>
                         <img src="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=300&h=500&fit=crop"
                             class="video-thumb">
@@ -200,7 +174,7 @@
                     <div class="video-card">
                         <div class="video-overlay">
                             <span class="video-views">▶ 500K</span>
-                            <div class="video-info">#viral #pakistan</div>
+                            <div class="video-info">#kitchenhacks</div>
                         </div>
                         <img src="https://images.unsplash.com/photo-1511556820780-d912e42b4980?w=300&h=500&fit=crop"
                             class="video-thumb">
@@ -209,7 +183,7 @@
                     <div class="video-card">
                         <div class="video-overlay">
                             <span class="video-views">▶ 1M</span>
-                            <div class="video-info">#foryou #multan</div>
+                            <div class="video-info">#fitnessmotivation</div>
                         </div>
                         <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=300&h=500&fit=crop"
                             class="video-thumb">
@@ -217,82 +191,66 @@
                 </div>
             </div>
 
-            <!-- Row 2: Books quad cards & more -->
+            <!-- Row 2: Global Categories Continued -->
             <div class="amazon-row">
-                <div class="a-card">
-                    <h2 class="a-card-title">Get your garden ready</h2>
-                    <div class="a-card-quad">
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1592318048602-54070a7df8cb?w=150&h=150&fit=crop"><span>Ornaments</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1416879598555-46e3cb98e663?w=150&h=150&fit=crop"><span>Tools</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=150&h=150&fit=crop"><span>Plants</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1524316104273-df267e7193dc?w=150&h=150&fit=crop"><span>Lighting</span>
-                        </div>
+                <!-- Card 5: Health & Fitness -->
+                <div class="a-card cat-card-clickable" data-cat="health">
+                    <h2 class="a-card-title">Health & Fitness</h2>
+                    <div class="a-card-single">
+                        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop"
+                            alt="Health">
                     </div>
-                    <a href="#" class="a-card-link">See more</a>
+                    <a href="#" class="a-card-link">Stay Active</a>
                 </div>
 
-                <div class="a-card">
-                    <h2 class="a-card-title">Shop Fashion filter items</h2>
-                    <div class="a-card-quad">
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=150&h=150&fit=crop"><span>Tops</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1515347619252-abbb4eb4dd2a?w=150&h=150&fit=crop"><span>Dresses</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=150&h=150&fit=crop"><span>Bottoms</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1520975954732-57dd22299614?w=150&h=150&fit=crop"><span>Jackets</span>
-                        </div>
+                <!-- Card 6: Kids & Baby -->
+                <div class="a-card cat-card-clickable" data-cat="kids">
+                    <h2 class="a-card-title">Kids & Baby</h2>
+                    <div class="a-card-single">
+                        <img src="https://images.unsplash.com/photo-1519340241574-2727f7f543e0?w=400&h=400&fit=crop"
+                            alt="Kids">
                     </div>
-                    <a href="#" class="a-card-link">See more</a>
+                    <a href="#" class="a-card-link">Shop Kids</a>
                 </div>
 
-                <div class="a-card">
-                    <h2 class="a-card-title">Find new trends you like</h2>
+                <!-- Card 7: Grocery -->
+                <div class="a-card cat-card-clickable" data-cat="grocery">
+                    <h2 class="a-card-title">Grocery & Gourmet</h2>
                     <div class="a-card-quad">
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1618244972963-dbee1a7edc95?w=150&h=150&fit=crop"><span>Shirts</span>
+                                src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=150&h=150&fit=crop"><span>Coffee</span>
                         </div>
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=150&h=150&fit=crop"><span>Outerwear</span>
+                                src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=150&h=150&fit=crop"><span>Olive
+                                Oil</span></div>
+                        <div class="quad-item"><img
+                                src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=150&h=150&fit=crop"><span>Tea</span>
                         </div>
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=150&h=150&fit=crop"><span>Shoes</span>
-                        </div>
-                        <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1532453288672-3a27e9be204b?w=150&h=150&fit=crop"><span>Accessories</span>
+                                src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=150&h=150&fit=crop"><span>Snacks</span>
                         </div>
                     </div>
-                    <a href="#" class="a-card-link">See more</a>
+                    <a href="#" class="a-card-link">Stock up</a>
                 </div>
 
-                <div class="a-card">
-                    <h2 class="a-card-title">Shop updates for elevated cabinets</h2>
+                <!-- Card 8: Digital & Specialized -->
+                <div class="a-card cat-card-clickable" data-cat="digital">
+                    <h2 class="a-card-title">Digital Subscriptions</h2>
                     <div class="a-card-quad">
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1556909211-36987daf1dc2?w=150&h=150&fit=crop"><span>Living</span>
+                                src="https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=150&h=150&fit=crop"><span>Software</span>
                         </div>
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=150&h=150&fit=crop"><span>Dining</span>
+                                src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=150&h=150&fit=crop"><span>Courses</span>
                         </div>
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=150&h=150&fit=crop"><span>Office</span>
+                                src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=150&h=150&fit=crop"><span>eBooks</span>
                         </div>
                         <div class="quad-item"><img
-                                src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=150&h=150&fit=crop"><span>Bedroom</span>
+                                src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=150&h=150&fit=crop"><span>Templates</span>
                         </div>
                     </div>
-                    <a href="#" class="a-card-link">See more</a>
+                    <a href="#" class="a-card-link">Explore Digital</a>
                 </div>
             </div>
 

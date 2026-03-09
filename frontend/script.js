@@ -875,29 +875,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoEl) logoEl.addEventListener('click', showHomeView);
 
     // Hook up sub-navbar links to category views
-    const subNavBtns = document.querySelectorAll('.sub-nav-btn');
-    subNavBtns.forEach(btn => {
-        btn.addEventListener('click', () => showCategoryView('all', btn.textContent.trim()));
+    document.querySelectorAll('.cat-trigger').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const catId = btn.getAttribute('data-cat');
+            const catName = btn.textContent.trim();
+            showCategoryView(catId, catName);
+        });
     });
 
-    // Hook all a-card-links and quad-items to trigger category view
-    document.querySelectorAll('.a-card-link').forEach(link => {
-        link.addEventListener('click', (e) => {
+    // Hook up homepage amazon cards to categories
+    document.querySelectorAll('.cat-card-clickable').forEach(card => {
+        card.addEventListener('click', (e) => {
             e.preventDefault();
-            const cat = link.textContent.includes('gaming') ? 'electronics' :
-                link.textContent.includes('Home') ? 'home' :
-                    link.textContent.includes('kitchen') ? 'home' :
-                        link.textContent.includes('Fashion') ? 'fashion' :
-                            link.textContent.includes('garden') ? 'home' : 'all';
-            showCategoryView(cat, link.closest('.a-card').querySelector('.a-card-title').textContent);
+            const catId = card.getAttribute('data-cat');
+            const catName = card.querySelector('.a-card-title').textContent.trim();
+            showCategoryView(catId, catName);
         });
     });
 
-    document.querySelectorAll('.quad-item').forEach(qi => {
-        qi.addEventListener('click', () => {
-            showCategoryView('all', qi.querySelector('span').textContent);
-        });
-    });
 
     window.showToast = (msg) => {
         const container = document.getElementById("toast-container");
