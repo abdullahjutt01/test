@@ -782,6 +782,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.closeAuthModal = () => closeModal('auth-modal');
 
+
+
+    const runStoreSearch = () => {
+        const searchInput = document.getElementById('search-input');
+        const dropdown = document.querySelector('.search-dropdown');
+        const query = (searchInput?.value || '').trim().toLowerCase();
+        const category = dropdown?.value || 'all';
+
+        const filtered = window.PRODUCTS.filter((p) => {
+            const categoryMatch = category === 'all' || p.category === category;
+            const text = `${p.title} ${p.category} ${p.subCategory || ''}`.toLowerCase();
+            const queryMatch = !query || text.includes(query);
+            return categoryMatch && queryMatch;
+        });
+
+        if (!query && category === 'all') {
+            renderProducts('featured-products', window.PRODUCTS.slice(0, 4));
+            renderProducts('best-sellers', window.PRODUCTS.slice(4, 8));
+            showHomeView();
+            return;
+        }
+
+        showCategoryView('all', query || category);
+        const grid = document.getElementById('category-products-grid');
+        if (!grid) return;
+
+        grid.innerHTML = `<div class="category-breadcrumb" onclick="showHomeView()">← Back to Home</div>`;
+        if (!filtered.length) {
+            grid.innerHTML += `<p style="padding: 20px; color: #555;">No products matched your search. Try another keyword.</p>`;
+            return;
+        }
+
+        filtered.forEach((p) => {
+            const pId = getId(p);
+            const discount = getDiscount(p.price, p.originalPrice);
+            const originalLabel = discount > 0 ? `<span class="cat-card-original">${formatPrice(p.originalPrice)}</span>` : '';
+            const discountLabel = discount > 0 ? `<span class="cat-card-discount">(-${discount}%)</span>` : '';
+            grid.innerHTML += `
+                <div class="cat-card">
+                    <img class="cat-card-image" src="${p.image}" alt="${p.title}" onclick="openProduct('${pId}')">
+                    <div class="cat-card-body">
+                        <div class="cat-card-title" onclick="openProduct('${pId}')">${p.title}</div>
+                        <div class="cat-card-price-block">
+                            <span class="cat-card-price"><sup>$</sup>${p.price.toFixed(2)}</span>
+                            ${originalLabel}
+                            ${discountLabel}
+                        </div>
+                        <button class="cat-card-add-btn" onclick="addToCart('${pId}')">Add to Cart</button>
+                    </div>
+                </div>`;
+        });
+    };
+
     // ============================================
     //  CATEGORY VIEW TOGGLE
     // ============================================
@@ -903,6 +956,14 @@ document.addEventListener("DOMContentLoaded", () => {
         qi.addEventListener('click', () => {
             showCategoryView('all', qi.querySelector('span').textContent);
         });
+    });
+
+
+    const searchBtn = document.getElementById('search-btn');
+    const searchInput = document.getElementById('search-input');
+    if (searchBtn) searchBtn.addEventListener('click', runStoreSearch);
+    if (searchInput) searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') runStoreSearch();
     });
 
     window.showToast = (msg) => {
