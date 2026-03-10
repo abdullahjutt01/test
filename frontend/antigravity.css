@@ -1,0 +1,364 @@
+/* ============================================================
+   ANTIGRAVITY.CSS — Floating / Levitating Animations
+   Copy-paste this into your project and link it in index.html
+   ============================================================ */
+
+/* ─── KEYFRAMES ─────────────────────────────────────────── */
+
+/* Gentle float up-down (products, cards) */
+@keyframes floatUpDown {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Slow spin + float (badge icons, discount labels) */
+@keyframes floatSpin {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(5deg);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+/* Pulse glow effect (buttons) */
+@keyframes glowPulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(255, 184, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 8px 30px rgba(255, 130, 0, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 4px 15px rgba(255, 184, 0, 0.4);
+    }
+}
+
+/* Hover lift + shadow bloom (for cart button) */
+@keyframes liftShadow {
+    0% {
+        transform: translateY(0px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    50% {
+        transform: translateY(-6px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    100% {
+        transform: translateY(0px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Wishlist heart bounce */
+@keyframes heartBeat {
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.3);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    75% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Shimmer sweep effect */
+@keyframes shimmer {
+    0% {
+        background-position: -400px 0;
+    }
+
+    100% {
+        background-position: 400px 0;
+    }
+}
+
+/* Badge pop-in */
+@keyframes badgePop {
+    0% {
+        transform: scale(0) rotate(-20deg);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+
+/* ─── PRODUCT CARDS — Floating Hover ────────────────────── */
+
+.product-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease !important;
+    will-change: transform;
+}
+
+.product-card:hover {
+    transform: translateY(-12px) scale(1.02) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(245, 158, 11, 0.15) !important;
+    z-index: 10;
+    position: relative;
+}
+
+/* Idle float animation (every card floats on its own, staggered) */
+.product-card:nth-child(odd) {
+    animation: floatUpDown 4s ease-in-out infinite;
+}
+
+.product-card:nth-child(even) {
+    animation: floatUpDown 4s ease-in-out infinite 1.5s;
+    /* staggered delay */
+}
+
+/* Stop idle animation on hover so the hover effect takes over cleanly */
+.product-card:hover {
+    animation: none !important;
+}
+
+/* Product image zoom + float on card hover */
+.product-card:hover .product-image {
+    transform: scale(1.08) translateY(-5px) !important;
+    transition: transform 0.4s ease !important;
+}
+
+
+/* ─── ADD TO CART BUTTON — Glow + Float ─────────────────── */
+
+.btn-add-cart {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+    animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+.btn-add-cart:hover {
+    transform: translateY(-4px) scale(1.05) !important;
+    animation: none !important;
+    background: #f7ca00 !important;
+    box-shadow: 0 12px 25px rgba(255, 180, 0, 0.6) !important;
+}
+
+.btn-add-cart:active {
+    transform: translateY(0px) scale(0.97) !important;
+}
+
+
+/* ─── PRIMARY BUTTON (.btn-primary) — Levitate ───────────── */
+
+.btn-primary {
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 14px 28px rgba(249, 115, 22, 0.5) !important;
+    animation: none !important;
+}
+
+.btn-primary:active {
+    transform: translateY(1px) scale(0.98) !important;
+}
+
+
+/* ─── CATEGORY CARDS — Float on Hover ───────────────────── */
+
+.category-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.category-card:hover {
+    transform: translateY(-10px) scale(1.05) !important;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Icon inside category card spins a bit on hover */
+.category-card:hover .category-icon {
+    animation: floatSpin 1.5s ease-in-out;
+    display: inline-block;
+}
+
+
+/* ─── CAT-CARD (Category View Product Cards) — Float ─────── */
+
+.cat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.cat-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12) !important;
+}
+
+.cat-card:hover .cat-card-image {
+    transform: scale(1.06) !important;
+    transition: transform 0.4s ease !important;
+}
+
+/* Small "Add to Cart" button in category view */
+.btn-add-cart-small {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+
+.btn-add-cart-small:hover {
+    transform: translateY(-3px) scale(1.04) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15) !important;
+    background: #e68900 !important;
+}
+
+
+/* ─── WISHLIST BUTTON — Heartbeat ────────────────────────── */
+
+.wishlist-btn:hover {
+    animation: heartBeat 0.6s ease !important;
+    background: rgba(255, 235, 235, 0.95) !important;
+    color: #ef4444 !important;
+}
+
+
+/* ─── PRODUCT BADGE — Pop In ─────────────────────────────── */
+
+.product-badge {
+    animation: badgePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.product-discount {
+    animation: badgePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
+}
+
+
+/* ─── PDP BUTTONS (Product Detail Page) ─────────────────── */
+
+.pdp-cart-btn {
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+.pdp-cart-btn:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 14px 28px rgba(35, 81, 155, 0.4) !important;
+    animation: none !important;
+}
+
+.pdp-buy-btn {
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.pdp-buy-btn:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 14px 28px rgba(255, 153, 0, 0.5) !important;
+}
+
+
+/* ─── AMAZON CATEGORY HOME CARDS (.a-card) ───────────────── */
+
+.a-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.a-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+
+/* ─── NAVBAR BUTTONS ─────────────────────────────────────── */
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease !important;
+}
+
+.nav-cart:hover {
+    transform: scale(1.08);
+    transition: transform 0.2s ease !important;
+}
+
+
+/* ─── TOAST NOTIFICATION — Slide Up + Float ─────────────── */
+
+@keyframes toastSlideUp {
+    0% {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    80% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+.toast {
+    animation: toastSlideUp 0.4s ease both !important;
+}
+
+
+/* ─── MODAL BOX — Float In ───────────────────────────────── */
+
+@keyframes modalFloatIn {
+    0% {
+        transform: translateY(40px) scale(0.95);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-box {
+    animation: modalFloatIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both !important;
+}
+
+
+/* ─── SHIMMER LOADING EFFECT (bonus) ─────────────────────── */
+
+.shimmer-loading {
+    background: linear-gradient(90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%);
+    background-size: 800px 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 4px;
+}
