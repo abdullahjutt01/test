@@ -1013,4 +1013,13 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => toast.remove(), 3000);
     };
 
+    // Remove Welcome Loader after 2 seconds
+    setTimeout(() => {
+        const loader = document.getElementById('welcome-loader');
+        if (loader) {
+            loader.classList.add('hidden');
+            setTimeout(() => loader.remove(), 800); // Wait for transition fade-out
+        }
+    }, 2000);
+
 });

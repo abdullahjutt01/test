@@ -362,3 +362,130 @@
     animation: shimmer 1.5s infinite linear;
     border-radius: 4px;
 }
+
+/* ─── AWESOME WELCOME LOADER ────────────────────────────── */
+
+.welcome-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #131921;
+    z-index: 999999;
+    /* on top of everything */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+}
+
+.welcome-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+    animation: loaderFloat 2s ease-in-out infinite;
+}
+
+.loader-logo {
+    font-size: 54px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 25px;
+    letter-spacing: -1px;
+    animation: logoPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.loader-logo span {
+    color: #f59e0b;
+}
+
+.loader-bar {
+    width: 250px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 0 auto 20px auto;
+    overflow: hidden;
+    transform-origin: left;
+    animation: fadeUp 1s 0.3s both;
+}
+
+.loader-progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #fcd34d);
+    border-radius: 10px;
+    animation: progressFill 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.loader-text {
+    color: #94a3b8;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeUp 1s 0.6s both;
+}
+
+/* loader keyframes */
+@keyframes loaderFloat {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes logoPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes progressFill {
+    0% {
+        width: 0%;
+    }
+
+    50% {
+        width: 60%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
